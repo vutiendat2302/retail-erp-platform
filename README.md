@@ -1,2 +1,3 @@
-# retail-erp-platform-
+# retail-erp-platform
 Optima project
+    

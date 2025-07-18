@@ -1,0 +1,41 @@
+# ===== JAVA / Spring Boot =====
+target/
+*.class
+*.jar
+*.war
+*.log
+*.iml
+*.iws
+*.ipr
+*.idea/
+*.project
+*.classpath
+*.settings/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/
+.spring/
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+venv/
+.env
+
+# ===== NodeJS / React / Tailwind =====
+
+# ===== OS/Editor/System Files =====
+.DS_Store
+Thumbs.db
+.vscode/
+*.swp
+*.bak
+*.tmp
+
+# ===== Docker =====
+*.log
+docker-compose.override.yml
+.env
