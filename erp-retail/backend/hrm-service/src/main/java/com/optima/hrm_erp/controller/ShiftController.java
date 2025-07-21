@@ -1,40 +1,40 @@
 package com.optima.hrm_erp.controller;
 
-import com.optima.hrm_erp.dto.BranchDto;
-import com.optima.hrm_erp.service.BranchService;
+import com.optima.hrm_erp.dto.ShiftDto;
+import com.optima.hrm_erp.service.ShiftService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/branches")
-public class BranchController {
-    private final BranchService service;
+@RequestMapping("/api/shifts")
+public class ShiftController {
 
-    public BranchController(BranchService service) {
+    private final ShiftService service;
+
+    public ShiftController(ShiftService service) {
         this.service = service;
     }
 
-    /*CRUD API*/
     @GetMapping
-    public List<BranchDto> getAll() {
+    public List<ShiftDto> getAll() {
         return service.getAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BranchDto> getById(@PathVariable Long id) {
+    public ResponseEntity<ShiftDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getById(id));
     }
 
     @PostMapping
-    public ResponseEntity<BranchDto> create(@RequestBody BranchDto dto) {
+    public ResponseEntity<ShiftDto> create(@RequestBody ShiftDto dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BranchDto> update(@PathVariable Long id,
-                                            @RequestBody BranchDto dto) {
+    public ResponseEntity<ShiftDto> update(@PathVariable Long id,
+                                           @RequestBody ShiftDto dto) {
         return ResponseEntity.ok(service.update(id, dto));
     }
 

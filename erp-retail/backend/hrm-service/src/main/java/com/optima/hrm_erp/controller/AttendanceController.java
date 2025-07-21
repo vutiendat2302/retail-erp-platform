@@ -1,40 +1,40 @@
 package com.optima.hrm_erp.controller;
 
-import com.optima.hrm_erp.dto.BranchDto;
-import com.optima.hrm_erp.service.BranchService;
+import com.optima.hrm_erp.dto.AttendanceDto;
+import com.optima.hrm_erp.service.AttendanceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/branches")
-public class BranchController {
-    private final BranchService service;
+@RequestMapping("/api/attendances")
+public class AttendanceController {
 
-    public BranchController(BranchService service) {
+    private final AttendanceService service;
+
+    public AttendanceController(AttendanceService service) {
         this.service = service;
     }
 
-    /*CRUD API*/
     @GetMapping
-    public List<BranchDto> getAll() {
+    public List<AttendanceDto> getAll() {
         return service.getAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BranchDto> getById(@PathVariable Long id) {
+    public ResponseEntity<AttendanceDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getById(id));
     }
 
     @PostMapping
-    public ResponseEntity<BranchDto> create(@RequestBody BranchDto dto) {
+    public ResponseEntity<AttendanceDto> create(@RequestBody AttendanceDto dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BranchDto> update(@PathVariable Long id,
-                                            @RequestBody BranchDto dto) {
+    public ResponseEntity<AttendanceDto> update(@PathVariable Long id,
+                                                @RequestBody AttendanceDto dto) {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
