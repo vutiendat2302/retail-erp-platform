@@ -1,5 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import PieChart from '../components/charts/PieChart';
+import JoinDateBarChart from '../components/charts/JoinDateBarChart';
+import BranchEmployeeBarChart from '../components/charts/BranchEmployeeBarChart';
 
 const Home = () => {
   return (
@@ -17,24 +20,32 @@ const Home = () => {
       >
         Quản lý nhân sự toàn diện, dễ dàng và hiệu quả.
       </motion.p>
-
-      {/* Phân trang 2 cột biểu đồ */}
-      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Biểu đồ 1 */}
-        <div className="bg-white rounded-xl shadow-md p-6">
-          <h2 className="text-lg font-semibold mb-4 text-center">Employee Distribution</h2>
-          {/* Placeholder biểu đồ */}
-          <div className="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
-            <span className="text-gray-400">[Chart 1 Placeholder]</span>
+        
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Cột 1: Biểu đồ 1 nhỏ hơn */}
+        <div className="col-span-1">
+          <div className="bg-white rounded-xl shadow-md p-6">
+            <h2 className="text-lg font-semibold mb-4 text-center">Phân bố giới tính</h2>
+            <div className="h-80">
+              <PieChart />
+            </div>
           </div>
         </div>
 
-        {/* Biểu đồ 2 */}
-        <div className="bg-white rounded-xl shadow-md p-6">
-          <h2 className="text-lg font-semibold mb-4 text-center">Attendance Overview</h2>
-          {/* Placeholder biểu đồ */}
-          <div className="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
-            <span className="text-gray-400">[Chart 2 Placeholder]</span>
+        {/* Cột 2: chứa 2 biểu đồ chồng dọc */}
+        <div className="col-span-2 grid grid-rows-2 gap-6">
+          {/* Biểu đồ A */}
+          <div className="bg-white rounded-xl shadow-md p-6">
+            <h2 className="text-lg font-semibold mb-4 text-center">Phân bố nhân viên theo tháng/năm bắt đầu làm</h2>
+            <JoinDateBarChart />
+          </div>
+
+          {/* Biểu đồ B */}
+          <div className="bg-white rounded-xl shadow-md p-6">
+            <h2 className="text-lg font-semibold mb-4 text-center">Số nhân viên theo chi nhánh</h2>
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <BranchEmployeeBarChart />
+            </div>
           </div>
         </div>
       </div>

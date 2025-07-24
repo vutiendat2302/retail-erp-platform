@@ -1,11 +1,12 @@
 import React from 'react';
+import ScheduleTable from '../components/ScheduleTable';
 
-const Schedue = () => {
+const Schedule = () => {
   return (
-    <div className="mt-10 text-center text-2xl">
-      ✅ Schedue Page is Working!
+    <div className="mt-10 px-4 md:px-10">
+      <ScheduleTable />
     </div>
   );
 };
 
-export default Schedue;
+export default Schedule;

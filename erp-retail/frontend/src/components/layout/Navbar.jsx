@@ -34,8 +34,8 @@ const Navbar = () => {
               <motion.div key={index} variants={fadeIn('down', 0.1 * (index + 1))}>
                 <Link
                   to={link.href}
-                  className={`text-sm font-medium relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-blue-600 after:transition-all
-                    ${location.pathname === link.href ? 'text-blue-600 after:w-full' : 'text-gray-600 hover:text-gray-900'}`}
+                  className={`text-sm font-medium relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-teal-600 after:transition-all
+                    ${location.pathname === link.href ? 'text-teal-600 after:w-full' : 'text-gray-600 hover:text-gray-900'}`}
                 >
                   {link.label}
                 </Link>
