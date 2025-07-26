@@ -17,8 +17,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(Customizer.withDefaults()) // Cho phép dùng cấu hình CORS phía dưới
-                .csrf(csrf -> csrf.disable())   // Tắt CSRF cho đơn giản (nếu chưa dùng auth)
+                .cors(Customizer.withDefaults()) // Cho phép dùng cấu hình CORS
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()   // Tạm thời cho phép tất cả request
                 );
@@ -32,7 +32,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // URL frontend
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         config.setAllowedHeaders(Arrays.asList("*"));
-        config.setAllowCredentials(true); // Nếu dùng cookie
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
