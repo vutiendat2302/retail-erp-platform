@@ -1,7 +1,10 @@
 package com.optima.hrm_erp.mapper;
 
 import com.optima.hrm_erp.dto.EmployeeDto;
+import com.optima.hrm_erp.entity.Branch;
 import com.optima.hrm_erp.entity.Employee;
+import com.optima.hrm_erp.entity.JobPosition;
+import com.optima.hrm_erp.repository.EmployeeRepository;
 
 public class EmployeeMapper {
     public static EmployeeDto toDto(Employee e){
@@ -27,4 +30,17 @@ public class EmployeeMapper {
         e.setStatus(dto.getStatus());
         return e;
     }
+
+    public static EmployeeDto fromProjection(EmployeeRepository.EmployeeViewProjection p) {
+        EmployeeDto dto = new EmployeeDto();
+        dto.setId(p.getId());
+        dto.setName(p.getName());
+        dto.setGender(p.getGender());
+        dto.setEmail(p.getEmail());
+        dto.setStatus(p.getStatus());
+        dto.setBranchName(p.getBranchName());
+        dto.setPositionName(p.getPositionName());
+        return dto;
+    }
+
 }

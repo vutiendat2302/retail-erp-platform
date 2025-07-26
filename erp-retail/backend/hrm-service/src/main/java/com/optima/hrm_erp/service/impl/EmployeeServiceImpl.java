@@ -1,13 +1,15 @@
 package com.optima.hrm_erp.service.impl;
 
+import com.optima.hrm_erp.dto.BranchEmployeeCountDto;
 import com.optima.hrm_erp.dto.EmployeeDto;
+import com.optima.hrm_erp.dto.EmployeeJoinDateDto;
 import com.optima.hrm_erp.entity.Employee;
 import com.optima.hrm_erp.mapper.EmployeeMapper;
 import com.optima.hrm_erp.repository.EmployeeRepository;
 import com.optima.hrm_erp.service.EmployeeService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,4 +57,49 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void delete(Long id) {
         repository.deleteById(id);
     }
+
+    @Override
+    public Map<String, Long> countByGender() {
+        List<Employee> all = repository.findAll();
+        return all.stream()
+                .collect(Collectors.groupingBy(
+                        e -> {
+                            String gender = e.getGender();
+                            return (gender == null) ? "Unknown" : gender;
+                        },
+                        Collectors.counting()
+                ));
+    }
+
+    @Override
+    public List<EmployeeJoinDateDto> getJoinDates() {
+        return repository.findEmployeeJoinDates().stream().map(p -> {
+            EmployeeJoinDateDto dto = new EmployeeJoinDateDto();
+            dto.setId(p.getId());
+            dto.setName(p.getName());
+            dto.setJoinDate(p.getJoinDate());
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BranchEmployeeCountDto> getEmployeeCountByBranch() {
+        return repository.countEmployeesByBranch().stream().map(p -> {
+            BranchEmployeeCountDto dto = new BranchEmployeeCountDto();
+            dto.setBranchId(p.getBranchId());
+            dto.setBranchName(p.getBranchName());
+            dto.setAddress(p.getAddress());
+            dto.setEmployeeCount(p.getEmployeeCount());
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<EmployeeDto> getEmployeesWithBranchAndPosition() {
+        return repository.findAllWithBranchAndPosition().stream()
+                .map(EmployeeMapper::fromProjection)
+                .collect(Collectors.toList());
+    }
+
+
 }

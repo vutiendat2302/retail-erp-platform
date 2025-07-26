@@ -16,17 +16,39 @@ public class Attendance {
     @Column(name = "shift_id")
     private Long shiftId;
 
-    @Column(name = "attendance_date")
+    @Column(name = "work_date")
     private LocalDate attendanceDate;
 
-    @Column(name = "checkin_time")
+    @Column(name = "check_in")
     private LocalTime checkinTime;
 
-    @Column(name = "checkout_time")
+    @Column(name = "check_out")
     private LocalTime checkoutTime;
 
     @Column(length = 20)
     private String status;
+
+    @Column(length = 30)
+    private String source;
+
+    @Column(columnDefinition = "TEXT")
+    private String note;    
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
 
     private LocalDateTime createdAt;
     private Long createdBy;
