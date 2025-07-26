@@ -43,14 +43,26 @@ const PieChart = () => {
       legend: {
         position: 'top',
         labels: {
-          generateLabels: (chart) =>
-            chart.data.labels.map((l, i) => ({
-              text: l,
-              fillStyle: chart.data.datasets[0].backgroundColor[i],
-              strokeStyle: '#fff',
-              lineWidth: 0,
-              index: i,
-            })),
+          generateLabels: (chart) => {
+            const idxNam = chart.data.labels.findIndex(l => l === 'Nam');
+            const idxNu = chart.data.labels.findIndex(l => l === 'Nữ');
+            return [
+              {
+                text: 'Nam',
+                fillStyle: '#86BBD8', // xanh
+                strokeStyle: '#fff',
+                lineWidth: 0,
+                index: idxNam,
+              },
+              {
+                text: 'Nữ',
+                fillStyle: '#DA6C6C', // đỏ
+                strokeStyle: '#fff',
+                lineWidth: 0,
+                index: idxNu,
+              }
+            ];
+          },
         },
       },
     },
