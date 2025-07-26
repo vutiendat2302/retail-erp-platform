@@ -9,6 +9,24 @@ public class EmployeeDto {
     private String email;
     private String gender;
     private String status;
+    private String branchName;
+    private String positionName;
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
+
+    public String getPositionName() {
+        return positionName;
+    }
+
+    public void setPositionName(String positionName) {
+        this.positionName = positionName;
+    }
 
     public Long getId() {
         return id;

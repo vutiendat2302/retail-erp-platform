@@ -9,7 +9,7 @@ public class JobPosition {
     private Long id;
 
     @Column(length = 100, nullable = false)
-    private String name;
+    private String title;
 
     private String status;
 
@@ -22,11 +22,11 @@ public class JobPosition {
     }
 
     public String getName() {
-        return name;
+        return title;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.title = name;
     }
 
     public String getStatus() {
