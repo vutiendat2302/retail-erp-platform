@@ -4,6 +4,11 @@ import com.optima.hrm_erp.dto.BranchEmployeeCountDto;
 import com.optima.hrm_erp.dto.EmployeeDto;
 import com.optima.hrm_erp.dto.EmployeeJoinDateDto;
 import com.optima.hrm_erp.service.EmployeeService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,4 +71,27 @@ public class EmployeeController {
     public ResponseEntity<List<EmployeeDto>> getEmployeesWithBranchAndPosition() {
         return ResponseEntity.ok(service.getEmployeesWithBranchAndPosition());
     }
+
+    @GetMapping("/paged")
+    public ResponseEntity<Page<EmployeeDto>> getEmployeesPaged(Pageable pageable) {
+        return ResponseEntity.ok(service.getAllPaged(pageable));
+    }
+
+    @GetMapping("/paged-advanced")
+    public ResponseEntity<List<EmployeeDto>> getEmployeesFilteredAndSorted(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String gender,
+            @RequestParam(defaultValue = "id,asc") String[] sort) {
+
+        Sort sortObj = Sort.by(
+                Arrays.stream(sort)
+                        .map(s -> {
+                            String[] parts = s.split(",");
+                            return new Sort.Order(Sort.Direction.fromString(parts[1]), parts[0]);
+                        }).toList()
+        );
+
+        return ResponseEntity.ok(service.getFilteredAndSorted(status, gender, sortObj));
+    }
+
 }

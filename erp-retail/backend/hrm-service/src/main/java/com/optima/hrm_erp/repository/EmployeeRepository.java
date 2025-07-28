@@ -3,6 +3,7 @@ package com.optima.hrm_erp.repository;
 import com.optima.hrm_erp.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -32,6 +33,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     """)
     List<BranchEmployeeCountProjection> countEmployeesByBranch();
 
+    /**/
     public interface EmployeeViewProjection {
         Long getId();
         String getName();
@@ -54,8 +56,27 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     FROM Employee e
     LEFT JOIN Branch b ON e.branchId = b.id
     LEFT JOIN JobPosition p ON e.positionId = p.id
-""")
+    """)
     List<EmployeeViewProjection> findAllWithBranchAndPosition();
+
+    @Query("""
+    SELECT 
+        e.id AS id,
+        e.name AS name,
+        e.gender AS gender,
+        e.email AS email,
+        e.status AS status,
+        b.name AS branchName,
+        p.title AS positionName
+    FROM Employee e
+    LEFT JOIN Branch b ON e.branchId = b.id
+    LEFT JOIN JobPosition p ON e.positionId = p.id
+    WHERE (:status IS NULL OR e.status = :status)
+      AND (:gender IS NULL OR e.gender = :gender)
+    """)
+    List<EmployeeViewProjection> findFiltered(@Param("status") String status,
+                                              @Param("gender") String gender);
+
 
 
 }

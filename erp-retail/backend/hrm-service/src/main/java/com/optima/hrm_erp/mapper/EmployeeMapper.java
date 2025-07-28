@@ -5,6 +5,7 @@ import com.optima.hrm_erp.entity.Branch;
 import com.optima.hrm_erp.entity.Employee;
 import com.optima.hrm_erp.entity.JobPosition;
 import com.optima.hrm_erp.repository.EmployeeRepository;
+import com.optima.hrm_erp.repository.EmployeeRepository.EmployeeViewProjection;
 
 public class EmployeeMapper {
     public static EmployeeDto toDto(Employee e){
@@ -31,7 +32,7 @@ public class EmployeeMapper {
         return e;
     }
 
-    public static EmployeeDto fromProjection(EmployeeRepository.EmployeeViewProjection p) {
+    public static EmployeeDto fromProjection(EmployeeViewProjection p) {
         EmployeeDto dto = new EmployeeDto();
         dto.setId(p.getId());
         dto.setName(p.getName());
