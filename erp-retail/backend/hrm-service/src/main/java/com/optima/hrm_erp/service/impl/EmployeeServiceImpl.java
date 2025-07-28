@@ -7,10 +7,16 @@ import com.optima.hrm_erp.entity.Employee;
 import com.optima.hrm_erp.mapper.EmployeeMapper;
 import com.optima.hrm_erp.repository.EmployeeRepository;
 import com.optima.hrm_erp.service.EmployeeService;
+import com.optima.hrm_erp.repository.EmployeeRepository.EmployeeViewProjection;
+
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -101,5 +107,35 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Page<EmployeeDto> getAllPaged(Pageable pageable) {
+        return repository.findAll(pageable).map(EmployeeMapper::toDto);
+    }
+
+    @Override
+    public List<EmployeeDto> getFilteredAndSorted(String status, String gender, Sort sort) {
+        List<EmployeeRepository.EmployeeViewProjection> result = repository.findFiltered(status, gender);
+
+        Comparator<EmployeeViewProjection> comparator = Comparator.comparing(EmployeeViewProjection::getId); // default
+
+        for (Sort.Order order : sort) {
+            if (order.getProperty().equalsIgnoreCase("branchName")) {
+                comparator = Comparator.comparing(EmployeeViewProjection::getBranchName, Comparator.nullsLast(String::compareToIgnoreCase));
+            } else if (order.getProperty().equalsIgnoreCase("positionName")) {
+                comparator = Comparator.comparing(EmployeeViewProjection::getPositionName, Comparator.nullsLast(String::compareToIgnoreCase));
+            } else if (order.getProperty().equalsIgnoreCase("name")) {
+                comparator = Comparator.comparing(EmployeeViewProjection::getName, Comparator.nullsLast(String::compareToIgnoreCase));
+            }
+
+            if (order.isDescending()) {
+                comparator = comparator.reversed();
+            }
+        }
+
+        return result.stream()
+                .sorted(comparator)
+                .map(EmployeeMapper::fromProjection)
+                .collect(Collectors.toList());
+    }
 
 }
