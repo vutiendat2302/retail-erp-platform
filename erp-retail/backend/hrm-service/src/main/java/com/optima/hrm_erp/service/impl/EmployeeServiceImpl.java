@@ -109,7 +109,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Page<EmployeeDto> getAllPaged(Pageable pageable) {
-        return repository.findAll(pageable).map(EmployeeMapper::toDto);
+        return repository.findAllIn4(pageable).map(EmployeeMapper::fromProjection);
     }
 
     @Override

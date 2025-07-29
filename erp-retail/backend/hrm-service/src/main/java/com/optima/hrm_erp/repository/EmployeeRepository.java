@@ -1,6 +1,8 @@
 package com.optima.hrm_erp.repository;
 
 import com.optima.hrm_erp.entity.Employee;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -58,6 +60,23 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     LEFT JOIN JobPosition p ON e.positionId = p.id
     """)
     List<EmployeeViewProjection> findAllWithBranchAndPosition();
+
+    @Query("""
+    SELECT 
+        e.id AS id,
+        e.name AS name,
+        e.gender AS gender,
+        e.email AS email,
+        e.status AS status,
+        b.name AS branchName,
+        p.title AS positionName
+    FROM Employee e
+    LEFT JOIN Branch b ON e.branchId = b.id
+    LEFT JOIN JobPosition p ON e.positionId = p.id
+    """
+    )
+    Page<EmployeeViewProjection> findAllIn4(Pageable pageable);
+
 
     @Query("""
     SELECT 
