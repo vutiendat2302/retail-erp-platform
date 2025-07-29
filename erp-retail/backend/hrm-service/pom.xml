@@ -6,7 +6,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.5.3</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>com.optima</groupId>
 	<artifactId>hrm-erp</artifactId>
@@ -48,7 +48,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.38</version> <!-- hoặc version ổn định mới nhất -->
+			<version>1.18.38</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
