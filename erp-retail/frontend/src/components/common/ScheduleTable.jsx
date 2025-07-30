@@ -1,68 +1,129 @@
-import React from 'react';
+import React, { useState } from "react";
+import { Button } from "flowbite-react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 
-const ScheduleTable = () => {
-  const days = [
-    { label: 'Thứ hai', date: 21 },
-    { label: 'Thứ ba', date: 22 },
-    { label: 'Thứ tư', date: 23 },
-    { label: 'Thứ năm', date: 24 },
-    { label: 'Thứ sáu', date: 25 },
-    { label: 'Thứ bảy', date: 26 },
-    { label: 'Chủ nhật', date: 27 },
-  ];
+const weekdays = ["Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy", "Chủ nhật"];
+const BRANCHES = [
+  "Chi nhánh Ba Đình",
+  "Chi nhánh Hoàn Kiếm",
+  "Chi nhánh Tây Hồ",
+  "Chi nhánh Long Biên",
+  "Chi nhánh Cầu Giấy",
+  "Chi nhánh Đống Đa",
+  "Chi nhánh Hai Bà Trưng",
+  "Chi nhánh Hoàng Mai",
+  "Chi nhánh Thanh Xuân",
+  "Chi nhánh Nam Từ Liêm",
+  "Chi nhánh Hà Đông"
+];
 
-  const employees = []; // giả sử chưa có nhân viên
+function getStartOfWeek(date) {
+  const d = new Date(date);
+  const day = d.getDay() || 7;
+  if (day !== 1) d.setHours(-24 * (day - 1));
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+function LichLamViec({ employees = [] }) {
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedBranch, setSelectedBranch] = useState(BRANCHES[0]);
+
+  const startOfWeek = getStartOfWeek(currentDate);
+  const days = [...Array(7)].map((_, i) => {
+    const date = new Date(startOfWeek);
+    date.setDate(date.getDate() + i);
+    return date;
+  });
+
+  const isToday = (date) => {
+    const today = new Date();
+    return today.toDateString() === date.toDateString();
+  };
+
+  const formatDate = (date) => `${date.getDate()}/${date.getMonth() + 1}`;
+
+  const changeWeek = (offset) => {
+    const newDate = new Date(currentDate);
+    newDate.setDate(newDate.getDate() + offset * 7);
+    setCurrentDate(newDate);
+  };
+
+  // Lọc nhân viên theo chi nhánh đã chọn
+  const filteredEmployees = employees.filter(emp => emp.branchName === selectedBranch);
 
   return (
-    <div className="w-full bg-white rounded-xl shadow-md border p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Lịch làm việc</h2>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            placeholder="🔍 Tìm kiếm nhân viên"
-            className="border rounded-md px-3 py-1 text-sm"
-          />
-          <button className="border px-3 py-1 text-sm rounded-md">Tuần này</button>
+    <div className="bg-white p-6 rounded-lg shadow max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+        <h1 className="text-2xl font-bold text-gray-800">Lịch làm việc</h1>
+        <div className="flex items-center gap-2">
+          <Button size="sm" onClick={() => changeWeek(-1)} color="light">
+            <ChevronLeftIcon className="w-5 h-5" />
+          </Button>
+          <div className="font-medium text-gray-700">
+            Tuần {formatDate(days[0])} - {formatDate(days[6])}
+          </div>
+          <Button size="sm" onClick={() => changeWeek(1)} color="light">
+            <ChevronRightIcon className="w-5 h-5" />
+          </Button>
+        </div>
+        <div>
+          <select
+            value={selectedBranch}
+            onChange={e => setSelectedBranch(e.target.value)}
+            className="border px-3 py-2 rounded text-base"
+          >
+            {BRANCHES.map(branch => (
+              <option key={branch} value={branch}>{branch}</option>
+            ))}
+          </select>
         </div>
       </div>
 
+      {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left border-collapse">
-          <thead className="bg-gray-50 border-b text-gray-700">
+        <table className="w-full text-center border border-gray-200 rounded-md">
+          <thead className="bg-gray-100 text-gray-600">
             <tr>
-              <th className="px-4 py-2 whitespace-nowrap font-semibold">Nhân viên</th>
-              {days.map((d, idx) => (
-                <th key={idx} className="px-4 py-2 whitespace-nowrap">
-                  <div className="text-center">
-                    <div className={d.date === 24 ? 'text-blue-600 font-semibold' : ''}>
-                      {d.label}
-                    </div>
-                    <div className={d.date === 24 ? 'text-white bg-blue-600 rounded-full w-6 h-6 inline-flex items-center justify-center' : ''}>
-                      {d.date}
-                    </div>
-                  </div>
+              <th className="p-3 border">Nhân viên</th>
+              {days.map((day, idx) => (
+                <th
+                  key={idx}
+                  className={`p-3 border ${
+                    isToday(day) ? "bg-blue-500 text-white font-bold" : ""
+                  }`}
+                >
+                  {weekdays[idx]}
+                  <br />
+                  <span className="text-sm font-normal">
+                    {day.getDate()}
+                  </span>
                 </th>
               ))}
-              <th className="px-4 py-2 whitespace-nowrap font-semibold">Lương dự kiến</th>
+              <th className="p-3 border">Lương dự kiến</th>
             </tr>
           </thead>
           <tbody>
-            {employees.length === 0 ? (
+            {filteredEmployees.length === 0 ? (
               <tr>
-                <td colSpan={days.length + 2} className="text-center py-10 text-gray-500">
-                  Bạn chưa tạo nhân viên cho cửa hàng. Nhấn{' '}
-                  <a href="/employee" className="text-blue-600 underline">vào đây</a> để tạo nhân viên.
+                <td colSpan={9} className="p-6 text-gray-500">
+                  Không có nhân viên ở chi nhánh này.{" "}
+                  <a href="/employee" className="text-blue-600 hover:underline">
+                    Nhấn vào đây
+                  </a>{" "}
+                  để tạo nhân viên.
                 </td>
               </tr>
             ) : (
-              employees.map((emp, idx) => (
-                <tr key={idx} className="border-b">
-                  <td className="px-4 py-2 font-medium">{emp.name}</td>
-                  {days.map((_, i) => (
-                    <td key={i} className="px-4 py-2 text-center">Ca sáng</td>
+              filteredEmployees.map(emp => (
+                <tr key={emp.id}>
+                  <td className="p-3 border">{emp.name}</td>
+                  {/* Hiển thị lịch làm việc từng ngày nếu có */}
+                  {days.map((day, idx) => (
+                    <td key={idx} className="p-3 border">—</td>
                   ))}
-                  <td className="px-4 py-2 text-right">500,000đ</td>
+                  <td className="p-3 border">—</td>
                 </tr>
               ))
             )}
@@ -71,6 +132,6 @@ const ScheduleTable = () => {
       </div>
     </div>
   );
-};
+}
 
-export default ScheduleTable;
+export default LichLamViec;
