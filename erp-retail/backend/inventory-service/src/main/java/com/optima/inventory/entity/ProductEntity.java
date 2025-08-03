@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Entity
@@ -67,7 +68,7 @@ public class ProductEntity {
     private Boolean sellable;
 
     @JoinColumn(name = "brand_id")
-    private long brand_id;
+    private long brandId;
 
     @Column(name = "category_id")
     private long categoryId;

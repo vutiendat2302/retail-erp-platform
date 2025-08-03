@@ -1,5 +1,7 @@
 package com.optima.inventory.dto.request;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -9,6 +11,10 @@ import java.time.LocalDateTime;
 
 @Data
 public class ProductUpdateRequest {
+
+    @JsonSerialize(using = ToStringSerializer.class)
+    private long id;
+
     @Column(name = "qr_code")
     private String qrCode;
 
