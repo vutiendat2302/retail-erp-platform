@@ -11,4 +11,3 @@ export const createProduct = (product: {name:string; description: string;
 
 export const getProduct = (productId: string) => axios.get(REST_API_BASE_URL + '/' + productId);
 
-adsf
