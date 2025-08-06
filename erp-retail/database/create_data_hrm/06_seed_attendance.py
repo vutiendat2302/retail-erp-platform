@@ -1,6 +1,6 @@
 from db import get_conn
 from utils.snowflake import SnowflakeGenerator
-gen = SnowflakeGenerator(datacenter_id=1, worker_id=1)
+gen = SnowflakeGenerator(datacenter=1, worker=1)
 
 from datetime import timedelta, datetime, time
 import random
@@ -48,6 +48,7 @@ def run():
                     cout=datetime.combine(d,time(17,0))
                 batch.append((gen.generate(),emp["id"],d,cin,cout,status,source,shift_id,""))
         cur.executemany(sql,batch)
+        conn.commit()
         print(f"Inserted {len(batch)} attendance records")
     conn.close()
 

@@ -1,6 +1,6 @@
 from db import get_conn
 from utils.snowflake import SnowflakeGenerator
-gen = SnowflakeGenerator(datacenter_id=1, worker_id=1)
+gen = SnowflakeGenerator(datacenter=1, worker=1)
 
 import datetime
 
@@ -30,6 +30,7 @@ def run(month=None,year=None):
             bonus=penalty=0
             batch.append((gen.generate(),r["emp_id"],month,year,r["days"],r["shifts"],bonus,penalty,base))
         cur.executemany(sql,batch)
+        conn.commit()
         print(f"Inserted {len(batch)} salary rows for {month}/{year}")
     conn.close()
 

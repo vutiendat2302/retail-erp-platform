@@ -1,6 +1,6 @@
 from db import get_conn
 from utils.snowflake import SnowflakeGenerator
-gen = SnowflakeGenerator(datacenter_id=1, worker_id=1)
+gen = SnowflakeGenerator(datacenter=1, worker=1)
 
 def run():
     conn=get_conn()
@@ -19,6 +19,7 @@ def run():
             emp=cur.fetchone()
             if emp:
                 cur.execute("UPDATE department SET manager_id=%s WHERE id=%s",(emp["id"],row["id"]))
+        conn.commit()
         print("Managers assigned for branch & department")
     conn.close()
 
