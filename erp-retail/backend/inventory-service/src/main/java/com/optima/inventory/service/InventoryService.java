@@ -1,12 +1,11 @@
 package com.optima.inventory.service;
 
-import com.optima.inventory.dto.request.InventoryCreationRequest;
-import com.optima.inventory.dto.request.InventoryUpdateRequest;
-import com.optima.inventory.dto.response.InventoryResponse;
+import com.optima.inventory.dto.request.InventoryRequestDto;
 import com.optima.inventory.entity.InventoryEntity;
 import com.optima.inventory.mapper.InventoryMapper;
-import com.optima.inventory.reponsitory.InventoryRepository;
+import com.optima.inventory.repository.InventoryRepository;
 import com.optima.inventory.utils.SnowflakeIdGenerator;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,8 @@ public class InventoryService {
     @Autowired
     private InventoryMapper inventoryMapper;
 
-    public InventoryEntity createInventory(InventoryCreationRequest request) {
+    @Transactional
+    public InventoryEntity createInventory(InventoryRequestDto request) {
         InventoryEntity inventoryEntity = inventoryMapper.toInventory(request);
 
         long newInventoryId = SnowflakeIdGenerator.nextId();
@@ -35,18 +35,21 @@ public class InventoryService {
         return inventoryRepository.findAll();
     }
 
-    public InventoryResponse getInventory(long inventoryId) {
-        return inventoryMapper.toInventoryResponse(inventoryRepository.findById(inventoryId).orElseThrow(() -> new RuntimeException("Inventory not found")));
+
+    public InventoryEntity getInventory(long inventoryId) {
+        return inventoryRepository.findById(inventoryId).orElseThrow(() -> new RuntimeException("Inventory not found"));
     }
 
-    public InventoryResponse updateInventory(long inventoryId, InventoryUpdateRequest request) {
+    @Transactional
+    public InventoryEntity updateInventory(long inventoryId, InventoryRequestDto request) {
         InventoryEntity inventoryEntity = inventoryRepository.findById(inventoryId)
                 .orElseThrow(() -> new RuntimeException("Inventory not found"));
         inventoryMapper.updateInventory(inventoryEntity, request);
 
-        return inventoryMapper.toInventoryResponse(inventoryRepository.save(inventoryEntity));
+        return inventoryRepository.save(inventoryEntity);
     }
 
+    @Transactional
     public void deleteInventory(long inventoryId) {
         inventoryRepository.deleteById(inventoryId);
     }

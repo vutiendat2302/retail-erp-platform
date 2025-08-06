@@ -1,10 +1,8 @@
 package com.optima.inventory.controller;
 
-import com.optima.inventory.dto.request.InventoryCreationRequest;
-import com.optima.inventory.dto.request.InventoryUpdateRequest;
-import com.optima.inventory.dto.response.InventoryResponse;
+import com.optima.inventory.dto.request.InventoryRequestDto;
 import com.optima.inventory.entity.InventoryEntity;
-import com.optima.inventory.reponsitory.InventoryRepository;
+import com.optima.inventory.repository.InventoryRepository;
 import com.optima.inventory.service.InventoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,7 @@ public class InventoryController {
     private InventoryRepository inventoryRepository;
 
     @PostMapping
-    public InventoryEntity createInventory(@RequestBody @Valid InventoryCreationRequest request) {
+    public InventoryEntity createInventory(@RequestBody @Valid InventoryRequestDto request) {
         return inventoryService.createInventory(request);
     }
 
@@ -31,12 +29,12 @@ public class InventoryController {
     }
 
     @GetMapping("/{inventoryId}")
-    public InventoryResponse getInventory(@PathVariable("inventoryId") long inventoryId) {
+    public InventoryEntity getInventory(@PathVariable("inventoryId") long inventoryId) {
         return inventoryService.getInventory(inventoryId);
     }
 
     @PutMapping("/{inventoryId}")
-    public InventoryResponse updateInventory(@PathVariable("inventoryId") long inventoryId, @RequestBody InventoryUpdateRequest request) {
+    public InventoryEntity updateInventory(@PathVariable("inventoryId") long inventoryId, @RequestBody InventoryRequestDto request) {
         return inventoryService.updateInventory(inventoryId, request);
     }
 

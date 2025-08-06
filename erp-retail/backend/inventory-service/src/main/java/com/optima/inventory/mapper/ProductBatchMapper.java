@@ -1,16 +1,15 @@
 package com.optima.inventory.mapper;
 
-import com.optima.inventory.dto.request.ProductBatchCreationRequest;
-import com.optima.inventory.dto.request.ProductBatchUpdateRequest;
-import com.optima.inventory.dto.response.ProductBatchResponse;
+import com.optima.inventory.dto.request.ProductBatchRequestDto;
 import com.optima.inventory.entity.ProductBatchEntity;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface ProductBatchMapper {
-    ProductBatchEntity toProductBatch(ProductBatchCreationRequest request);
+    ProductBatchEntity toProductBatch(ProductBatchRequestDto request);
 
-    ProductBatchResponse toProductBatchResponse(ProductBatchEntity productBatch);
-    void updateProductBatch(@MappingTarget ProductBatchEntity productBatch, ProductBatchUpdateRequest request);
+    @Mapping(target = "id", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateProductBatch(@MappingTarget ProductBatchEntity productBatchEntity, ProductBatchRequestDto request);
+
 }
