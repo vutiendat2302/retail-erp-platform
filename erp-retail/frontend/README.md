@@ -1,69 +1,88 @@
-# React + TypeScript + Vite
+## Cách chạy dự án
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### 1. Cài đặt Node.js
+- Tải và cài đặt [Node.js](https://nodejs.org/) (khuyến nghị bản LTS).
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 2. Cài đặt các package
+Mở terminal tại thư mục dự án và chạy:
+```sh
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 3. Chạy dự án ở chế độ phát triển
+```sh
+npm run dev
 ```
+- Truy cập địa chỉ hiển thị trên terminal (http://localhost:5173).
+
+### 4. Build dự án để deploy
+```sh
+npm run build
+```
+- Kết quả sẽ nằm trong thư mục `dist/`.
+
+---
+
+## Cấu trúc thư mục chi tiết
+
+```
+frontend/
+├── public/
+│   └── index.html
+├── src/
+│   ├── components/
+│   │   ├── charts/
+│   │   │   ├── PieChart.jsx
+│   │   │   ├── BranchEmployeeBarChart.jsx
+│   │   │   └── ...
+│   │   ├── common/
+│   │   │   ├── EmployeeTable.jsx
+│   │   │   ├── EmployeeForm.jsx
+│   │   │   ├── ScheduleTable.jsx
+│   │   │   └── ...
+│   │   └── layout/
+│   │       ├── MainLayout.jsx
+│   │       ├── Navbar.jsx
+│   │       └── ...
+│   ├── pages/
+│   │   ├── Home.jsx
+│   │   ├── Employee.jsx
+│   │   ├── Schedule.jsx
+│   │   ├── Attendance.jsx
+│   │   └── ...
+│   ├── services/
+│   │   ├── employeeService.js
+│   │   └── ...
+│   ├── utils/
+│   │   └── motion.js
+│   ├── App.jsx
+│   └── main.jsx
+├── package.json
+├── tailwind.config.js
+├── vite.config.js
+└── README.md
+```
+
+### Giải thích các thư mục chính
+- **public/**: Chứa file HTML gốc.
+- **src/components/**: Các component dùng lại, chia theo chức năng (charts, common, layout).
+- **src/pages/**: Các trang chính của ứng dụng (Employee, Schedule, Attendance...).
+- **src/services/**: Chứa các hàm gọi API backend.
+- **src/utils/**: Các hàm tiện ích, animation, v.v.
+- **App.jsx**: Cấu hình router và layout tổng.
+- **main.jsx**: Điểm khởi động React.
+- **tailwind.config.js**: Cấu hình TailwindCSS.
+- **vite.config.js**: Cấu hình Vite.
+
+---
+
+## Một số lệnh hữu ích
+
+- **Kiểm tra lỗi cú pháp:**  
+  ```sh
+  npm run lint
+  ```
+- **Cài thêm package:**  
+  ```sh
+  npm install <package-name>
+  ```
