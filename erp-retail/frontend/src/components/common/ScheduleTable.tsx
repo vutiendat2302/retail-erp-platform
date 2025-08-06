@@ -2,7 +2,21 @@ import React, { useState } from "react";
 import { Button } from "flowbite-react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 
+interface Employee {
+  id: string | number;
+  name: string;
+  branchName: string;
+}
+
+// Props của component
+interface LichLamViecProps {
+  employees?: Employee[];
+}
+
+// Tên thứ
 const weekdays = ["Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy", "Chủ nhật"];
+
+// Danh sách chi nhánh
 const BRANCHES = [
   "Chi nhánh Ba Đình",
   "Chi nhánh Hoàn Kiếm",
@@ -17,7 +31,8 @@ const BRANCHES = [
   "Chi nhánh Hà Đông"
 ];
 
-function getStartOfWeek(date) {
+// Hàm lấy ngày đầu tuần (Thứ 2)
+function getStartOfWeek(date: Date): Date {
   const d = new Date(date);
   const day = d.getDay() || 7;
   if (day !== 1) d.setHours(-24 * (day - 1));
@@ -25,31 +40,32 @@ function getStartOfWeek(date) {
   return d;
 }
 
-function LichLamViec({ employees = [] }) {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedBranch, setSelectedBranch] = useState(BRANCHES[0]);
+// Component chính
+const LichLamViec: React.FC<LichLamViecProps> = ({ employees = [] }) => {
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [selectedBranch, setSelectedBranch] = useState<string>(BRANCHES[0]);
 
   const startOfWeek = getStartOfWeek(currentDate);
-  const days = [...Array(7)].map((_, i) => {
+
+  const days: Date[] = [...Array(7)].map((_, i) => {
     const date = new Date(startOfWeek);
     date.setDate(date.getDate() + i);
     return date;
   });
 
-  const isToday = (date) => {
+  const isToday = (date: Date): boolean => {
     const today = new Date();
     return today.toDateString() === date.toDateString();
   };
 
-  const formatDate = (date) => `${date.getDate()}/${date.getMonth() + 1}`;
+  const formatDate = (date: Date): string => `${date.getDate()}/${date.getMonth() + 1}`;
 
-  const changeWeek = (offset) => {
+  const changeWeek = (offset: number): void => {
     const newDate = new Date(currentDate);
     newDate.setDate(newDate.getDate() + offset * 7);
     setCurrentDate(newDate);
   };
 
-  // Lọc nhân viên theo chi nhánh đã chọn
   const filteredEmployees = employees.filter(emp => emp.branchName === selectedBranch);
 
   return (
@@ -75,7 +91,9 @@ function LichLamViec({ employees = [] }) {
             className="border px-3 py-2 rounded text-base"
           >
             {BRANCHES.map(branch => (
-              <option key={branch} value={branch}>{branch}</option>
+              <option key={branch} value={branch}>
+                {branch}
+              </option>
             ))}
           </select>
         </div>
@@ -90,15 +108,11 @@ function LichLamViec({ employees = [] }) {
               {days.map((day, idx) => (
                 <th
                   key={idx}
-                  className={`p-3 border ${
-                    isToday(day) ? "bg-blue-500 text-white font-bold" : ""
-                  }`}
+                  className={`p-3 border ${isToday(day) ? "bg-blue-500 text-white font-bold" : ""}`}
                 >
                   {weekdays[idx]}
                   <br />
-                  <span className="text-sm font-normal">
-                    {day.getDate()}
-                  </span>
+                  <span className="text-sm font-normal">{day.getDate()}</span>
                 </th>
               ))}
               <th className="p-3 border">Lương dự kiến</th>
@@ -119,8 +133,7 @@ function LichLamViec({ employees = [] }) {
               filteredEmployees.map(emp => (
                 <tr key={emp.id}>
                   <td className="p-3 border">{emp.name}</td>
-                  {/* Hiển thị lịch làm việc từng ngày nếu có */}
-                  {days.map((day, idx) => (
+                  {days.map((_, idx) => (
                     <td key={idx} className="p-3 border">—</td>
                   ))}
                   <td className="p-3 border">—</td>
@@ -132,6 +145,6 @@ function LichLamViec({ employees = [] }) {
       </div>
     </div>
   );
-}
+};
 
 export default LichLamViec;

@@ -6,24 +6,41 @@ import {
   createEmployee,
   updateEmployee,
   deleteEmployee
-} from '../services/employeeService';
+} from '../services/hrm-api/emmployeeService';
 
-const Employee = () => {
-  const [employees, setEmployees]   = useState([]);
-  const [page, setPage]             = useState(0);
-  const [size]                      = useState(5);
-  const [totalPages, setTotalPages] = useState(0);
-  const [loading, setLoading]       = useState(false);
+// Kiểu tạm cho Employee, bạn nên thay bằng kiểu thật nếu có
+interface Employee {
+  id: string;
+  name: string;
+  email: string;
+  gender: string;
+  status: string;
+  branchName: string;
+  positionName: string;
+}
 
-  const [formOpen, setFormOpen]           = useState(false);
-  const [currentEmployee, setCurrentEmployee] = useState(null);
+interface EmployeeFormData {
+  name: string;
+  email: string;
+  gender: string;
+  status: string;
+}
 
-  // Load khi mount và khi page thay đổi
+const Employee: React.FC = () => {
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [page, setPage] = useState<number>(0);
+  const [size] = useState<number>(5);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const [formOpen, setFormOpen] = useState<boolean>(false);
+  const [currentEmployee, setCurrentEmployee] = useState<Employee | null>(null);
+
   useEffect(() => {
     loadEmployees(page);
   }, [page]);
 
-  const loadEmployees = async pageNum => {
+  const loadEmployees = async (pageNum: number) => {
     setLoading(true);
     try {
       const res = await getPagedEmployees({ page: pageNum, size, sort: 'name,asc' });
@@ -36,10 +53,10 @@ const Employee = () => {
     }
   };
 
-  const handleDelete = async id => {
+  const handleDelete = async (id: string) => {
     if (!window.confirm('Xác nhận xóa nhân viên này?')) return;
     await deleteEmployee(id);
-    // Nếu xóa bản cuối cùng của trang hiện tại và page>0, lùi page
+
     if (employees.length === 1 && page > 0) {
       setPage(page - 1);
     } else {
@@ -47,7 +64,7 @@ const Employee = () => {
     }
   };
 
-  const handleEdit = emp => {
+  const handleEdit = (emp: Employee) => {
     setCurrentEmployee(emp);
     setFormOpen(true);
   };
@@ -61,7 +78,7 @@ const Employee = () => {
     setFormOpen(false);
   };
 
-  const handleFormSubmit = async data => {
+  const handleFormSubmit = async (data: EmployeeFormData) => {
     if (currentEmployee) {
       await updateEmployee(currentEmployee.id, data);
     } else {
@@ -71,7 +88,7 @@ const Employee = () => {
     loadEmployees(page);
   };
 
-  const goToPage = newPage => {
+  const goToPage = (newPage: number) => {
     if (newPage >= 0 && newPage < totalPages) {
       setPage(newPage);
     }
@@ -89,7 +106,6 @@ const Employee = () => {
         onAdd={handleAdd}
       />
 
-      {/* Pagination */}
       <div className="flex justify-center items-center mt-4 space-x-4">
         <button
           onClick={() => goToPage(page - 1)}

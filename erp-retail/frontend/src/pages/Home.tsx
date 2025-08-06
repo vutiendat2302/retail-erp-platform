@@ -4,7 +4,7 @@ import PieChart from '../components/charts/PieChart';
 import JoinDateBarChart from '../components/charts/JoinDateBarChart';
 import BranchEmployeeBarChart from '../components/charts/BranchEmployeeBarChart';
 
-const Home = () => {
+const Home: React.FC = () => {
   return (
     <div className="px-4 md:px-10">
       {/* Tiêu đề */}
@@ -20,7 +20,7 @@ const Home = () => {
       >
         Quản lý nhân sự toàn diện, dễ dàng và hiệu quả.
       </motion.p>
-        
+
       <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Cột 1: Biểu đồ 1 nhỏ hơn */}
         <div className="col-span-1">
@@ -36,13 +36,17 @@ const Home = () => {
         <div className="col-span-2 grid grid-rows-2 gap-6">
           {/* Biểu đồ A */}
           <div className="bg-white rounded-xl shadow-md p-6">
-            <h2 className="text-lg font-semibold mb-4 text-center">Phân bố nhân viên theo tháng/năm bắt đầu làm</h2>
+            <h2 className="text-lg font-semibold mb-4 text-center">
+              Phân bố nhân viên theo tháng/năm bắt đầu làm
+            </h2>
             <JoinDateBarChart />
           </div>
 
           {/* Biểu đồ B */}
           <div className="bg-white rounded-xl shadow-md p-6">
-            <h2 className="text-lg font-semibold mb-4 text-center">Số nhân viên theo chi nhánh</h2>
+            <h2 className="text-lg font-semibold mb-4 text-center">
+              Số nhân viên theo chi nhánh
+            </h2>
             <div className="bg-white rounded-xl shadow-md p-6">
               <BranchEmployeeBarChart />
             </div>

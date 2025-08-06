@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { TrendingUp } from "lucide-react";
-import { PieChart, Pie, Sector, ResponsiveContainer } from "recharts";
-import { PieSectorDataItem } from "recharts/types/polar/Pie";
+import {
+  PieChart,
+  Pie,
+  Sector,
+  ResponsiveContainer,
+  PieProps,
+  PieLabelRenderProps,
+} from "recharts";
 
 import {
   Card,
@@ -10,7 +16,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../components/ui/card";
+
 import {
   ChartConfig,
   ChartContainer,
@@ -18,18 +25,24 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-import { getGenderStats } from "@/services/employeeService";
+import { getGenderStats } from "@/services/emmployeeService";
 
-const chartColors = ["var(--chart-1)", "var(--chart-2)"]; // set in your CSS theme
+interface GenderDataItem {
+  gender: string;
+  value: number;
+  fill: string;
+}
 
-const EmployeeGenderDonutChart = () => {
-  const [chartData, setChartData] = useState([]);
-  const [total, setTotal] = useState(0);
+const chartColors = ["var(--chart-1)", "var(--chart-2)"]; // CSS theme variables
+
+const EmployeeGenderDonutChart: React.FC = () => {
+  const [chartData, setChartData] = useState<GenderDataItem[]>([]);
+  const [total, setTotal] = useState<number>(0);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await getGenderStats(); // { male: number, female: number }
+        const res = await getGenderStats(); // Expects { male: number, female: number }
         const male = res.data?.male ?? 0;
         const female = res.data?.female ?? 0;
 
@@ -46,11 +59,15 @@ const EmployeeGenderDonutChart = () => {
     fetchStats();
   }, []);
 
-  /** @type {ChartConfig} */
-  const chartConfig = {
+  const chartConfig: ChartConfig = {
     value: { label: "Employees" },
     Male: { label: "Male", color: chartColors[0] },
     Female: { label: "Female", color: chartColors[1] },
+  };
+
+  const activeShape = (props: PieLabelRenderProps & { outerRadius?: number }) => {
+    const { outerRadius = 0, ...rest } = props;
+    return <Sector {...rest} outerRadius={outerRadius + 10} />;
   };
 
   return (
@@ -76,9 +93,7 @@ const EmployeeGenderDonutChart = () => {
               innerRadius={60}
               strokeWidth={5}
               activeIndex={0}
-              activeShape={({ outerRadius = 0, ...props } /** @type {PieSectorDataItem} */) => (
-                <Sector {...props} outerRadius={outerRadius + 10} />
-              )}
+              activeShape={activeShape}
             />
           </PieChart>
         </ChartContainer>
@@ -87,7 +102,8 @@ const EmployeeGenderDonutChart = () => {
         <div className="flex items-center gap-2 leading-none font-medium">
           {total > 0 ? (
             <>
-              Male {Math.round((chartData[0]?.value / total) * 100)}% | Female {Math.round((chartData[1]?.value / total) * 100)}%
+              Male {Math.round((chartData[0]?.value / total) * 100)}% | Female{" "}
+              {Math.round((chartData[1]?.value / total) * 100)}%
             </>
           ) : (
             "No data"

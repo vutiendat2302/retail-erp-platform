@@ -1,7 +1,18 @@
 import React from 'react';
 
-const ScheduleTable = () => {
-  const days = [
+interface Day {
+  label: string;
+  date: number;
+}
+
+interface Employee {
+  id: string | number;
+  name: string;
+  // Bạn có thể thêm các trường khác nếu cần như schedule, salary, v.v.
+}
+
+const ScheduleTable: React.FC = () => {
+  const days: Day[] = [
     { label: 'Thứ hai', date: 21 },
     { label: 'Thứ ba', date: 22 },
     { label: 'Thứ tư', date: 23 },
@@ -11,7 +22,7 @@ const ScheduleTable = () => {
     { label: 'Chủ nhật', date: 27 },
   ];
 
-  const employees = []; // giả sử chưa có nhân viên
+  const employees: Employee[] = []; // giả sử chưa có nhân viên
 
   return (
     <div className="w-full bg-white rounded-xl shadow-md border p-4">
@@ -38,7 +49,13 @@ const ScheduleTable = () => {
                     <div className={d.date === 24 ? 'text-blue-600 font-semibold' : ''}>
                       {d.label}
                     </div>
-                    <div className={d.date === 24 ? 'text-white bg-blue-600 rounded-full w-6 h-6 inline-flex items-center justify-center' : ''}>
+                    <div
+                      className={
+                        d.date === 24
+                          ? 'text-white bg-blue-600 rounded-full w-6 h-6 inline-flex items-center justify-center'
+                          : ''
+                      }
+                    >
                       {d.date}
                     </div>
                   </div>
@@ -52,7 +69,10 @@ const ScheduleTable = () => {
               <tr>
                 <td colSpan={days.length + 2} className="text-center py-10 text-gray-500">
                   Bạn chưa tạo nhân viên cho cửa hàng. Nhấn{' '}
-                  <a href="/employee" className="text-blue-600 underline">vào đây</a> để tạo nhân viên.
+                  <a href="/employee" className="text-blue-600 underline">
+                    vào đây
+                  </a>{' '}
+                  để tạo nhân viên.
                 </td>
               </tr>
             ) : (

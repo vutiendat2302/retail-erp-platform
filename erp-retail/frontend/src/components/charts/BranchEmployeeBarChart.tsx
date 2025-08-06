@@ -1,23 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import {
-  Chart as ChartJS, CategoryScale, LinearScale, BarElement,
-  Title, Tooltip, Legend
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  type ChartOptions,
+  type ChartData,
 } from 'chart.js';
-import { getEmployeeCountByBranch } from '../../services/employeeService';
+import { getEmployeeCountByBranch } from '../../services/hrm-api/emmployeeService';
 
+// Đăng ký các thành phần của chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const BranchEmployeeBarChart = () => {
-  const [data, setData] = useState(null);
+// Định nghĩa kiểu dữ liệu cho từng chi nhánh trả về từ API
+interface BranchStats {
+  branchName: string;
+  employeeCount: number;
+}
+
+const BranchEmployeeBarChart: React.FC = () => {
+  const [data, setData] = useState<ChartData<'bar'> | null>(null);
 
   useEffect(() => {
-    getEmployeeCountByBranch().then(res => {
-      const raw = res.data;
-      const labels = raw.map(b => b.branchName);
-      const counts = raw.map(b => b.employeeCount);
+    getEmployeeCountByBranch().then((res) => {
+      const raw: BranchStats[] = res.data;
+      const labels = raw.map((b) => b.branchName);
+      const counts = raw.map((b) => b.employeeCount);
 
-      setData({
+      const chartData: ChartData<'bar'> = {
         labels,
         datasets: [
           {
@@ -28,17 +42,18 @@ const BranchEmployeeBarChart = () => {
             barThickness: 24,
           },
         ],
-      });
+      };
+
+      setData(chartData);
     });
   }, []);
 
-  const options = {
-    indexAxis: 'y', 
+  const options: ChartOptions<'bar'> = {
+    indexAxis: 'y', // Biểu đồ ngang
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
-      datalabels: { display: false },
       title: {
         display: false,
         text: 'Số nhân viên theo chi nhánh',
@@ -46,7 +61,7 @@ const BranchEmployeeBarChart = () => {
       },
       tooltip: {
         callbacks: {
-          label: ctx => `${ctx.parsed.x} nhân viên`,
+          label: (ctx) => `${ctx.parsed.x} nhân viên`,
         },
       },
     },
@@ -57,7 +72,7 @@ const BranchEmployeeBarChart = () => {
         ticks: { precision: 0 },
       },
       y: {
-        title: { display: false, text: 'Chi nhánh' },
+        title: { display: false },
       },
     },
   };

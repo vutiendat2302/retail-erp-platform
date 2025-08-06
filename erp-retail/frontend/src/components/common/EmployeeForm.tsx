@@ -1,38 +1,61 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
 
-const EmployeeForm = ({ initialData, onSubmit, onClose }) => {
-  const [formData, setFormData] = useState({
+interface Employee {
+  id: string;
+  name: string;
+  email: string;
+  gender: string;
+  status: string;
+  branchName: string;
+  positionName: string;
+}
+
+interface EmployeeFormData {
+  name: string;
+  email: string;
+  gender: string;
+  status: string;
+}
+
+interface EmployeeFormProps {
+  initialData?: Employee | null;
+  onSubmit: (data: EmployeeFormData) => void | Promise<void>;
+  onClose: () => void;
+}
+
+const EmployeeForm: React.FC<EmployeeFormProps> = ({ initialData, onSubmit, onClose }) => {
+  const [formData, setFormData] = useState<EmployeeFormData>({
     name: '',
     email: '',
     gender: 'Nam',
-    status: 'active'
-    // nếu cần: branchId, positionId...
+    status: 'active',
   });
 
   useEffect(() => {
     if (initialData) {
       setFormData({
-        name:  initialData.name  || '',
+        name: initialData.name || '',
         email: initialData.email || '',
         gender: initialData.gender || 'Nam',
-        status: initialData.status || 'active'
+        status: initialData.status || 'active',
       });
     } else {
       setFormData({
         name: '',
         email: '',
         gender: 'Nam',
-        status: 'active'
+        status: 'active',
       });
     }
   }, [initialData]);
 
-  const handleChange = e => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
   };
