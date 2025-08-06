@@ -1,6 +1,7 @@
 from db import get_conn
 from utils.snowflake import SnowflakeGenerator
-gen = SnowflakeGenerator(datacenter_id=1, worker_id=1)
+gen = SnowflakeGenerator(datacenter=1, worker=1)
+import pymysql.cursors
 
 from faker import Faker
 import random, datetime
@@ -35,8 +36,11 @@ def run():
             join=fake.date_between(start_date='-3y',end_date='today')
             s_type=random.choice(SAL_TYPES)
             spd = random.randint(180,300)*1000 if s_type=='daily' else 0
-            batch.append((emp_id,name,email,gender,dob,address,branch,dept,pos,join,s_type,spd))
+            sps = 0 if s_type == 'daily' else random.randint(150, 250) * 1000  # salary_per_shift
+            
+            batch.append((emp_id,name,email,gender,dob,address,branch,dept,pos,join,s_type,spd, sps))
         cur.executemany(sql,batch)
+        conn.commit()
         print(f"Inserted {len(batch)} employees")
     conn.close()
 

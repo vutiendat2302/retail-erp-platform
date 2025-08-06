@@ -1,6 +1,6 @@
 from db import get_conn
 from utils.snowflake import SnowflakeGenerator
-gen = SnowflakeGenerator(datacenter_id=1, worker_id=1)
+gen = SnowflakeGenerator(datacenter=1, worker=1)
 
 BRANCHES = [
     ("Chi nhánh Ba Đình", "Ba Đình, Hà Nội"),
@@ -22,7 +22,9 @@ def run():
         cur.execute("DELETE FROM branch")
         sql = "INSERT INTO branch(id,name,address,created_at) VALUES(%s,%s,%s,NOW())"
         data = [(gen.generate(), n, addr) for n, addr in BRANCHES]
+        print(data[:3])
         cur.executemany(sql, data)
+        conn.commit()
         print(f"Inserted {len(data)} branches")
     conn.close()
 

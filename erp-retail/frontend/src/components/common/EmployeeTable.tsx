@@ -1,6 +1,30 @@
 import React from 'react';
 
-const EmployeeTable = ({ data, loading, onEdit, onDelete, onAdd }) => {
+interface Employee {
+  id: string;
+  name: string;
+  email: string;
+  gender: string;
+  status: string;
+  branchName: string;
+  positionName: string;
+}
+
+interface EmployeeTableProps {
+  data: Employee[];
+  loading: boolean;
+  onEdit: (employee: Employee) => void;
+  onDelete: (id: string) => void;
+  onAdd: () => void;
+}
+
+const EmployeeTable: React.FC<EmployeeTableProps> = ({
+  data,
+  loading,
+  onEdit,
+  onDelete,
+  onAdd,
+}) => {
   return (
     <div>
       <div className="mb-4 flex justify-end">
@@ -26,12 +50,12 @@ const EmployeeTable = ({ data, loading, onEdit, onDelete, onAdd }) => {
         <tbody>
           {loading ? (
             <tr>
-              <td colSpan="7" className="px-4 py-6 text-center">
+              <td colSpan={7} className="px-4 py-6 text-center">
                 Đang tải dữ liệu...
               </td>
             </tr>
           ) : data.length > 0 ? (
-            data.map(emp => (
+            data.map((emp) => (
               <tr key={emp.id} className="border-t">
                 <td className="px-4 py-2">{emp.name}</td>
                 <td className="px-4 py-2">{emp.email}</td>
@@ -57,7 +81,7 @@ const EmployeeTable = ({ data, loading, onEdit, onDelete, onAdd }) => {
             ))
           ) : (
             <tr>
-              <td colSpan="7" className="px-4 py-6 text-center">
+              <td colSpan={7} className="px-4 py-6 text-center">
                 Không có dữ liệu
               </td>
             </tr>
@@ -69,5 +93,3 @@ const EmployeeTable = ({ data, loading, onEdit, onDelete, onAdd }) => {
 };
 
 export default EmployeeTable;
-
-

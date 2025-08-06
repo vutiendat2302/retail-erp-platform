@@ -7,10 +7,12 @@ import {
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  type ChartOptions,
+  type ChartData,
 } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { getJoinDates } from '../../services/employeeService';
+import { getJoinDates } from '../../services/hrm-api/emmployeeService';
 
 ChartJS.register(
   CategoryScale,
@@ -22,16 +24,20 @@ ChartJS.register(
   ChartDataLabels
 );
 
+// Kiểu cho dữ liệu trả về từ API
+interface EmployeeJoinDate {
+  joinDate: string; // ISO date string
+}
 
-const JoinDateBarChart = () => {
-  const [chartData, setChartData] = useState(null);
+const JoinDateBarChart: React.FC = () => {
+  const [chartData, setChartData] = useState<ChartData<'bar'> | null>(null);
 
   useEffect(() => {
-    getJoinDates().then(res => {
-      const rawData = res.data;
-      const counts = {};
+    getJoinDates().then((res) => {
+      const rawData = res.data as EmployeeJoinDate[];
+      const counts: Record<string, number> = {};
 
-      rawData.forEach(emp => {
+      rawData.forEach((emp) => {
         const date = new Date(emp.joinDate);
         const key = `${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
         counts[key] = (counts[key] || 0) + 1;
@@ -43,23 +49,25 @@ const JoinDateBarChart = () => {
         return ya !== yb ? ya - yb : ma - mb;
       });
 
-      const dataset = sortedLabels.map(label => counts[label]);
+      const dataset = sortedLabels.map((label) => counts[label]);
 
-      setChartData({
+      const data: ChartData<'bar'> = {
         labels: sortedLabels,
         datasets: [
           {
             label: 'Nhân viên bắt đầu làm',
             data: dataset,
             backgroundColor: '#86BBD8',
-            borderRadius: 0, 
+            borderRadius: 0,
           },
         ],
-      });
+      };
+
+      setChartData(data);
     });
   }, []);
 
-  const options = {
+  const options: ChartOptions<'bar'> = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -71,14 +79,14 @@ const JoinDateBarChart = () => {
       },
       tooltip: {
         callbacks: {
-          label: ctx => `${ctx.parsed.y} nhân viên`,
+          label: (ctx) => `${ctx.parsed.y} nhân viên`,
         },
       },
       datalabels: {
         display: false,
-        anchor: 'end',   
+        anchor: 'end',
         align: 'end',
-        formatter: val => val,
+        formatter: (val: number) => val,
         color: '#000',
         font: { weight: 'bold' },
       },
@@ -97,9 +105,9 @@ const JoinDateBarChart = () => {
 
   return chartData ? (
     <div className="w-full h-[360px]">
-        <Bar options={options} data={chartData} />
+      <Bar options={options} data={chartData} />
     </div>
-    ) : (
+  ) : (
     <p className="text-center text-gray-500 mt-8">Đang tải dữ liệu...</p>
   );
 };

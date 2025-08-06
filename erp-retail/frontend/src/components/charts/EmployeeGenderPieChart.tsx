@@ -1,19 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
-import { getGenderStats } from '../../services/employeeService';
+import { ApexOptions } from 'apexcharts';
+import { getGenderStats } from '../../services/hrm-api/emmployeeService';
 
-const EmployeeGenderPieChart = () => {
-  const [series, setSeries] = useState([]);
-  const [labels, setLabels] = useState([]);
-  const [loading, setLoading] = useState(true);
+// Nếu bạn biết cấu trúc cụ thể hơn thì có thể mở rộng kiểu tại đây
+interface GenderStatsResponse {
+  [gender: string]: number; // ví dụ: { Nam: 10, Nữ: 15 }
+}
+
+const EmployeeGenderPieChart: React.FC = () => {
+  const [series, setSeries] = useState<number[]>([]);
+  const [labels, setLabels] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     getGenderStats()
       .then((res) => {
-        const data = res.data;
+        const data = res.data as GenderStatsResponse;
         if (data) {
-          setLabels(Object.keys(data)); 
-          setSeries(Object.values(data)); 
+          setLabels(Object.keys(data));
+          setSeries(Object.values(data));
         }
       })
       .catch((err) => {
@@ -22,7 +28,7 @@ const EmployeeGenderPieChart = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const options = {
+  const options: ApexOptions = {
     chart: {
       type: 'pie',
       fontFamily: 'Inter, sans-serif',
@@ -37,20 +43,20 @@ const EmployeeGenderPieChart = () => {
         },
         dynamicAnimation: {
           enabled: true,
-          speed: 350
-        }
-      }
+          speed: 350,
+        },
+      },
     },
     labels: labels,
-    colors: ['#9EC1CF', '#A8C66C'], 
+    colors: ['#9EC1CF', '#A8C66C'],
     stroke: {
       show: true,
       width: 2,
-      colors: ['#fff'], 
+      colors: ['#fff'],
     },
     dataLabels: {
       enabled: true,
-      formatter: (val) => `${val.toFixed(1)}%`,
+      formatter: (val: number) => `${val.toFixed(1)}%`,
       style: {
         fontSize: '14px',
         fontWeight: 600,
@@ -71,9 +77,9 @@ const EmployeeGenderPieChart = () => {
     tooltip: {
       enabled: true,
       y: {
-        formatter: (value) => `${value.toLocaleString()} nhân viên`,
+        formatter: (value: number) => `${value.toLocaleString()} nhân viên`,
         title: {
-          formatter: (seriesName) => seriesName,
+          formatter: (seriesName: string) => seriesName,
         },
       },
     },

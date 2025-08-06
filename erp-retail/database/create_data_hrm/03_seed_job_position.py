@@ -1,6 +1,6 @@
 from db import get_conn
 from utils.snowflake import SnowflakeGenerator
-gen = SnowflakeGenerator(datacenter_id=1, worker_id=1)
+gen = SnowflakeGenerator(datacenter=1, worker=1)
 
 POSITIONS = [
     ("Cashier", "Junior", "Xử lý thanh toán, in hóa đơn"),
@@ -21,6 +21,7 @@ def run():
         sql = "INSERT INTO job_position(id,title,level,description,created_at) VALUES(%s,%s,%s,%s,NOW())"
         data = [(gen.generate(), t, lvl, desc) for t,lvl,desc in POSITIONS]
         cur.executemany(sql, data)
+        conn.commit()
         print(f"Inserted {len(data)} job positions")
     conn.close()
 
