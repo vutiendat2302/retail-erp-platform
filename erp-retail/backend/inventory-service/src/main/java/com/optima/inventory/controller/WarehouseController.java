@@ -1,10 +1,8 @@
 package com.optima.inventory.controller;
 
-import com.optima.inventory.dto.request.WarehouseCreationRequest;
-import com.optima.inventory.dto.request.WarehouseUpdateRequest;
-import com.optima.inventory.dto.response.WarehouseResponse;
+import com.optima.inventory.dto.request.WarehouseRequestDto;
 import com.optima.inventory.entity.WarehouseEntity;
-import com.optima.inventory.reponsitory.WarehouseRepository;
+import com.optima.inventory.repository.WarehouseRepository;
 import com.optima.inventory.service.WarehouseService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,7 @@ public class WarehouseController {
     private WarehouseRepository warehouseRepository;
 
     @PostMapping
-    public WarehouseEntity createWarehouse(@RequestBody @Valid WarehouseCreationRequest request) {
+    public WarehouseEntity createWarehouse(@RequestBody @Valid WarehouseRequestDto request) {
         return warehouseService.createWarehouse(request);
     }
 
@@ -31,12 +29,12 @@ public class WarehouseController {
     }
 
     @GetMapping("/{warehouseId}")
-    public WarehouseResponse getWarehouse(@PathVariable("warehouseId") long warehouseId) {
+    public WarehouseEntity getWarehouse(@PathVariable("warehouseId") long warehouseId) {
         return warehouseService.getWarehouse(warehouseId);
     }
 
     @PutMapping("/{warehouseId}")
-    public WarehouseResponse updateWarehouse(@PathVariable("warehouseId") long warehouseId, @RequestBody WarehouseUpdateRequest request) {
+    public WarehouseEntity updateWarehouse(@PathVariable("warehouseId") long warehouseId, @RequestBody WarehouseRequestDto request) {
         return warehouseService.updateWarehouse(warehouseId, request);
     }
 

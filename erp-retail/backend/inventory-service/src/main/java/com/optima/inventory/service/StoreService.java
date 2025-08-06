@@ -1,12 +1,11 @@
 package com.optima.inventory.service;
 
-import com.optima.inventory.dto.request.StoreCreationRequest;
-import com.optima.inventory.dto.request.StoreUpdateRequest;
-import com.optima.inventory.dto.response.StoreResponse;
+import com.optima.inventory.dto.request.StoreRequestDto;
 import com.optima.inventory.entity.StoreEntity;
 import com.optima.inventory.mapper.StoreMapper;
-import com.optima.inventory.reponsitory.StoreRepository;
+import com.optima.inventory.repository.StoreRepository;
 import com.optima.inventory.utils.SnowflakeIdGenerator;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,8 @@ public class StoreService {
     @Autowired
     private StoreMapper storeMapper;
 
-    public StoreEntity createStore(StoreCreationRequest request) {
+    @Transactional
+    public StoreEntity createStore(StoreRequestDto request) {
         StoreEntity storeEntity = storeMapper.toStore(request);
 
         long newStoreId = SnowflakeIdGenerator.nextId();
@@ -35,18 +35,20 @@ public class StoreService {
         return storeRepository.findAll();
     }
 
-    public StoreResponse getStore(long storeId) {
-        return storeMapper.toStoreResponse(storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("store not found")));
+    public StoreEntity getStore(long storeId) {
+        return storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("store not found"));
     }
 
-    public StoreResponse updateStore(long storeId, StoreUpdateRequest request) {
+    @Transactional
+    public StoreEntity updateStore(long storeId, StoreRequestDto request) {
         StoreEntity storeEntity = storeRepository.findById(storeId)
                 .orElseThrow(() -> new RuntimeException("Store not found"));
         storeMapper.updateStore(storeEntity, request);
 
-        return storeMapper.toStoreResponse(storeRepository.save(storeEntity));
+        return storeRepository.save(storeEntity);
     }
 
+    @Transactional
     public void deleteStore(long storeId) {
         storeRepository.deleteById(storeId);
     }

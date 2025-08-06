@@ -1,5 +1,7 @@
 package com.optima.inventory.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -11,7 +13,8 @@ import java.time.LocalDateTime;
 @Data
 public class ProductEntity {
     @Id
-    private long id;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long id;
 
     @Column(name = "qr_code")
     private String qrCode;
@@ -29,7 +32,7 @@ public class ProductEntity {
     @Column(name = "list_image")
     private String listImage;
 
-    @Column(name = "price_normal")
+    @Column(name = "price_normal", precision = 18, scale = 3)
     private BigDecimal priceNormal;
 
     @Column(name = "price_sell")
@@ -45,9 +48,6 @@ public class ProductEntity {
 
     @Column(name = "view_count")
     private int viewCount;
-
-    @Column(name = "manufacturing_location_id")
-    private long manufacturingLocationId;
 
     @Column(name = "meta_keyword")
     private String metaKeyword;
@@ -66,10 +66,15 @@ public class ProductEntity {
 
     private Boolean sellable;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id")
-    private long brand_id;
+    private BrandEntity brand;
 
-    @Column(name = "category_id")
-    private long categoryId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private CategoryEntity category;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manufacturing_location_id")
+    private ManufacturingLocationEntity manufacturingLocation;
 }

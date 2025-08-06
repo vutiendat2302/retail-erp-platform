@@ -1,10 +1,8 @@
 package com.optima.inventory.controller;
 
-import com.optima.inventory.dto.request.BrandCreationRequest;
-import com.optima.inventory.dto.request.BrandUpdateRequest;
-import com.optima.inventory.dto.response.BrandResponse;
+import com.optima.inventory.dto.request.BrandRequesDto;
 import com.optima.inventory.entity.BrandEntity;
-import com.optima.inventory.reponsitory.BrandRepository;
+import com.optima.inventory.repository.BrandRepository;
 import com.optima.inventory.service.BrandService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
-@RequestMapping("/brand")
+@RequestMapping("/api/brand")
 public class BrandController {
     @Autowired
     private BrandService brandService;
@@ -21,7 +20,7 @@ public class BrandController {
     private BrandRepository brandRepository;
 
     @PostMapping
-    public BrandEntity createBrand(@RequestBody @Valid  BrandCreationRequest request) {
+    public BrandEntity createBrand(@RequestBody @Valid BrandRequesDto request) {
         return brandService.createBrand(request);
     }
 
@@ -31,12 +30,12 @@ public class BrandController {
     }
 
     @GetMapping("/{brandId}")
-    public BrandResponse getBrand(@PathVariable("brandId") long brandId) {
+    public BrandEntity getBrand(@PathVariable("brandId") long brandId) {
         return brandService.getBrand(brandId);
     }
 
     @PutMapping("/{brandId}")
-    public BrandResponse updateBrand(@PathVariable("brandId") long brandId, @RequestBody BrandUpdateRequest request) {
+    public BrandEntity updateBrand(@PathVariable("brandId") long brandId, @RequestBody BrandRequesDto request) {
         return brandService.updateBrand(brandId, request);
     }
 

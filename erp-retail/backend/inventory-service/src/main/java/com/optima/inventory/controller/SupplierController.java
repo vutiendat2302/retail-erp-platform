@@ -1,10 +1,8 @@
 package com.optima.inventory.controller;
 
-import com.optima.inventory.dto.request.SupplierCreationRequest;
-import com.optima.inventory.dto.request.SupplierUpdateRequest;
-import com.optima.inventory.dto.response.SupplierResponse;
+import com.optima.inventory.dto.request.SupplierRequestDto;
 import com.optima.inventory.entity.SupplierEntity;
-import com.optima.inventory.reponsitory.SupplierRepository;
+import com.optima.inventory.repository.SupplierRepository;
 import com.optima.inventory.service.SupplierService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,7 @@ public class SupplierController {
     private SupplierRepository supplierRepository;
 
     @PostMapping
-    public SupplierEntity createSupplier(@RequestBody @Valid SupplierCreationRequest request) {
+    public SupplierEntity createSupplier(@RequestBody @Valid SupplierRequestDto request) {
         return supplierService.createSupplier(request);
     }
 
@@ -31,12 +29,12 @@ public class SupplierController {
     }
 
     @GetMapping("/{supplierId}")
-    public SupplierResponse getSupplier(@PathVariable("supplierId") long supplierId) {
+    public SupplierEntity getSupplier(@PathVariable("supplierId") long supplierId) {
         return supplierService.getSupplier(supplierId);
     }
 
     @PutMapping("/{supplierId}")
-    public SupplierResponse updateSupplier(@PathVariable("supplierId") long supplierId, @RequestBody SupplierUpdateRequest request) {
+    public SupplierEntity updateSupplier(@PathVariable("supplierId") long supplierId, @RequestBody SupplierRequestDto request) {
         return supplierService.updateSupplier(supplierId, request);
     }
 

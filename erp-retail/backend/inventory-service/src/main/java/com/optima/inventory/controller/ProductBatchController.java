@@ -1,10 +1,8 @@
 package com.optima.inventory.controller;
 
-import com.optima.inventory.dto.request.ProductBatchCreationRequest;
-import com.optima.inventory.dto.request.ProductBatchUpdateRequest;
-import com.optima.inventory.dto.response.ProductBatchResponse;
+import com.optima.inventory.dto.request.ProductBatchRequestDto;
 import com.optima.inventory.entity.ProductBatchEntity;
-import com.optima.inventory.reponsitory.ProductBatchRepository;
+import com.optima.inventory.repository.ProductBatchRepository;
 import com.optima.inventory.service.ProductBatchService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,7 @@ public class ProductBatchController {
     private ProductBatchRepository productBatchRepository;
 
     @PostMapping
-    public ProductBatchEntity createProductBatch(@RequestBody @Valid ProductBatchCreationRequest request) {
+    public ProductBatchEntity createProductBatch(@RequestBody @Valid ProductBatchRequestDto request) {
         return productBatchService.createProductBatch(request);
     }
 
@@ -31,12 +29,12 @@ public class ProductBatchController {
     }
 
     @GetMapping("/{productBatchId}")
-    public ProductBatchResponse getProductBatch(@PathVariable("productBatchId") long productBatchId) {
+    public ProductBatchEntity getProductBatch(@PathVariable("productBatchId") long productBatchId) {
         return productBatchService.getProductBatch(productBatchId);
     }
 
     @PutMapping("/{productBatchId}")
-    public ProductBatchResponse updateProductBatch(@PathVariable long productBatchId, @RequestBody ProductBatchUpdateRequest request) {
+    public ProductBatchEntity updateProductBatch(@PathVariable long productBatchId, @RequestBody ProductBatchRequestDto request) {
         return productBatchService.updateProductBatch(productBatchId, request);
     }
 

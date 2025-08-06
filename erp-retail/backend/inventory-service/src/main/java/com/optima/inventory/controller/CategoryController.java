@@ -1,10 +1,8 @@
 package com.optima.inventory.controller;
 
-import com.optima.inventory.dto.request.CategoryCreationRequest;
-import com.optima.inventory.dto.request.CategoryUpdateRequest;
-import com.optima.inventory.dto.response.CategoryResponse;
+import com.optima.inventory.dto.request.CategoryRequestDto;
 import com.optima.inventory.entity.CategoryEntity;
-import com.optima.inventory.reponsitory.CategoryRepository;
+import com.optima.inventory.repository.CategoryRepository;
 import com.optima.inventory.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/api/category")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
@@ -21,7 +20,7 @@ public class CategoryController {
     private CategoryRepository categoryRepository;
 
     @PostMapping
-    public CategoryEntity createCategory(@RequestBody @Valid CategoryCreationRequest request) {
+    public CategoryEntity createCategory(@RequestBody @Valid CategoryRequestDto request) {
         return categoryService.createCategory(request);
     }
 
@@ -31,12 +30,12 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}")
-    public CategoryResponse getCategory(@PathVariable("categoryId") long categoryId) {
+    public CategoryEntity getCategory(@PathVariable("categoryId") long categoryId) {
         return categoryService.getCategory(categoryId);
     }
 
     @PutMapping("/{categoryId}")
-    public CategoryResponse updateCategory(@PathVariable("categoryId") long categoryId, @RequestBody CategoryUpdateRequest request) {
+    public CategoryEntity updateCategory(@PathVariable("categoryId") long categoryId, @RequestBody CategoryRequestDto request) {
         return categoryService.updateCategory(categoryId, request);
     }
 

@@ -1,5 +1,7 @@
 package com.optima.inventory.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -13,8 +15,10 @@ import java.time.LocalDateTime;
 @Data
 public class WarehouseEntity {
     @Id
+    @JsonSerialize(using = ToStringSerializer.class)
     private long id;
     private String email;
+    private String name;
     private String address;
     private String description;
     private String type;

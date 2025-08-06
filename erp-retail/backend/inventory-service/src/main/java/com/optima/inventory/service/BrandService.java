@@ -1,12 +1,11 @@
 package com.optima.inventory.service;
 
-import com.optima.inventory.dto.request.BrandCreationRequest;
-import com.optima.inventory.dto.request.BrandUpdateRequest;
-import com.optima.inventory.dto.response.BrandResponse;
+import com.optima.inventory.dto.request.BrandRequesDto;
 import com.optima.inventory.entity.BrandEntity;
 import com.optima.inventory.mapper.BrandMapper;
-import com.optima.inventory.reponsitory.BrandRepository;
+import com.optima.inventory.repository.BrandRepository;
 import com.optima.inventory.utils.SnowflakeIdGenerator;
+import jakarta.transaction.Transactional;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,13 @@ public class BrandService {
     @Autowired
     private BrandMapper brandMapper;
 
-    public BrandEntity createBrand(BrandCreationRequest request) {
+    public BrandService(BrandRepository brandRepository, BrandMapper brandMapper) {
+        this.brandRepository = brandRepository;
+        this.brandMapper = brandMapper;
+    }
+
+    @Transactional
+    public BrandEntity createBrand(BrandRequesDto request) {
         if (brandRepository.existsByName(request.getName())) {
             throw new RuntimeException("Name existed");
         }
@@ -45,19 +50,21 @@ public class BrandService {
         return brandRepository.findAll();
     }
 
-    public BrandResponse getBrand(long brandId) {
-        return brandMapper.toBrandResponse(brandRepository.findById(brandId).orElseThrow(() -> new RuntimeException("Brand not exist")));
+    public BrandEntity getBrand(long brandId) {
+        return brandRepository.findById(brandId).orElseThrow(() -> new RuntimeException("Brand not exist"));
     }
 
-    public BrandResponse updateBrand(long brandId, BrandUpdateRequest request) {
+    @Transactional
+    public BrandEntity updateBrand(long brandId, BrandRequesDto request) {
         BrandEntity brandEntity = brandRepository.findById(brandId)
                 .orElseThrow(() -> new RuntimeException("Brand not found"));
 
         brandMapper.updateBrand(brandEntity, request);
 
-        return brandMapper.toBrandResponse(brandRepository.save(brandEntity));
+        return brandRepository.save(brandEntity);
     }
 
+    @Transactional
     public void deleteBrand(long brandId) {
         brandRepository.deleteById(brandId);
     }
