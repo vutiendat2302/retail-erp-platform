@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: pos-service
+  datasource:
+    url: jdbc:mysql://pos-db:3306/pos_db
+    username: root
+    password: 12122005
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+
