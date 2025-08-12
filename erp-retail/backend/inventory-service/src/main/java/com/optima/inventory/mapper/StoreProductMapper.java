@@ -1,17 +1,15 @@
 package com.optima.inventory.mapper;
 
-import com.optima.inventory.dto.request.StoreProductCreationRequest;
-import com.optima.inventory.dto.request.StoreProductUpdateRequest;
-import com.optima.inventory.dto.response.StoreProductResponse;
-import com.optima.inventory.dto.response.StoreResponse;
+import com.optima.inventory.dto.request.StoreProductRequestDto;
 import com.optima.inventory.entity.StoreProductEntity;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
+import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
 public interface StoreProductMapper {
-    StoreProductEntity toStoreProduct(StoreProductCreationRequest request);
+    StoreProductEntity toStoreProduct(StoreProductRequestDto request);
 
-    StoreProductResponse toStoreProductResponse(StoreProductEntity storeProductEntity);
-    void updateStoreProduct(@MappingTarget StoreProductEntity storeProductEntity, StoreProductUpdateRequest request);
+    @Mapping(target = "id", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateStoreProduct(@MappingTarget StoreProductEntity storeProductEntity, StoreProductRequestDto request);
 }

@@ -1,10 +1,8 @@
 package com.optima.inventory.controller;
 
-import com.optima.inventory.dto.request.ManufacturingLocationCreationRequest;
-import com.optima.inventory.dto.request.ManufacturingLocationUpdateRequest;
-import com.optima.inventory.dto.response.ManufacturingLocationResponse;
+import com.optima.inventory.dto.request.ManufacturingLocationRequestDto;
 import com.optima.inventory.entity.ManufacturingLocationEntity;
-import com.optima.inventory.reponsitory.ManufacturingLocationRepository;
+import com.optima.inventory.repository.ManufacturingLocationRepository;
 import com.optima.inventory.service.ManufacturingLocationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
-@RequestMapping("/manufacturing_location")
+@RequestMapping("/api/manufacturingLocation")
 public class ManufacturingLocationController {
     @Autowired
     private ManufacturingLocationService manufacturingLocationService;
@@ -21,7 +20,7 @@ public class ManufacturingLocationController {
     private ManufacturingLocationRepository manufacturingLocationRepository;
 
     @PostMapping
-    public ManufacturingLocationEntity createManufacturingLocation(@RequestBody @Valid ManufacturingLocationCreationRequest request) {
+    public ManufacturingLocationEntity createManufacturingLocation(@RequestBody @Valid ManufacturingLocationRequestDto request) {
         return manufacturingLocationService.createManufacturingLocation(request);
     }
 
@@ -31,13 +30,13 @@ public class ManufacturingLocationController {
     }
 
     @GetMapping("/{manufacturingLocationId}")
-    public ManufacturingLocationResponse getManufacturingLocation(@PathVariable("manufacturingLocationId") long manufacturingLocationId) {
+    public ManufacturingLocationEntity getManufacturingLocation(@PathVariable("manufacturingLocationId") long manufacturingLocationId) {
         return manufacturingLocationService.getManufacturingLocation(manufacturingLocationId);
     }
 
     @PutMapping("/{manufacturingLocationId}")
-    public ManufacturingLocationResponse updateManufacturingLocation(@PathVariable("manufacturingLocationId") long manufacturingLocationId,
-                                                                     @RequestBody ManufacturingLocationUpdateRequest request) {
+    public ManufacturingLocationEntity updateManufacturingLocation(@PathVariable("manufacturingLocationId") long manufacturingLocationId,
+                                                                     @RequestBody ManufacturingLocationRequestDto request) {
         return manufacturingLocationService.updateManufacturingLocation(manufacturingLocationId, request);
     }
 

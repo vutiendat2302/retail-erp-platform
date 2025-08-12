@@ -1,12 +1,17 @@
 package com.optima.inventory.service;
 
-import com.optima.inventory.dto.request.ProductCreationRequest;
-import com.optima.inventory.dto.request.ProductUpdateRequest;
-import com.optima.inventory.dto.response.ProductResponse;
+import com.optima.inventory.dto.response.ProductResponseDto;
+import com.optima.inventory.entity.BrandEntity;
+import com.optima.inventory.entity.CategoryEntity;
+import com.optima.inventory.entity.ManufacturingLocationEntity;
 import com.optima.inventory.entity.ProductEntity;
 import com.optima.inventory.mapper.ProductMapper;
-import com.optima.inventory.reponsitory.ProductRepository;
+import com.optima.inventory.repository.BrandRepository;
+import com.optima.inventory.repository.CategoryRepository;
+import com.optima.inventory.repository.ManufacturingLocationRepository;
+import com.optima.inventory.repository.ProductRepository;
 import com.optima.inventory.utils.SnowflakeIdGenerator;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +27,16 @@ public class ProductService {
     @Autowired
     private ProductMapper productMapper;
 
-    public ProductEntity createProduct(ProductCreationRequest request) {
-        ProductEntity productEntity = productMapper.toProduct(request);
+    public ProductService(ProductRepository productRepository,
+                          ProductMapper productMapper) {
+        this.productRepository = productRepository;
+        this.productMapper = productMapper;
+    }
+
+    @Transactional
+    public ProductResponseDto createProduct(ProductResponseDto productResponseDto) {
+
+        ProductEntity productEntity = productMapper.toProduct(productResponseDto);
 
         long newProductId = SnowflakeIdGenerator.nextId();
         while (productRepository.existsById(newProductId)) {
@@ -31,31 +44,41 @@ public class ProductService {
         }
         productEntity.setId(newProductId);
 
-        return productRepository.save(productEntity);
+        return productMapper.toProductResponseDto(productRepository.save(productEntity));
     }
 
-    public List<ProductEntity> getProducts() {
-        return productRepository.findAll();
+    @Transactional
+    public List<ProductResponseDto> getProducts() {
+        return productRepository.findAll().stream()
+                .map(productMapper::toProductResponseDto)
+                .collect(Collectors.toList());
     }
 
-    public ProductResponse getProduct(long productId) {
-        return productMapper.toProductResponse(productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not find")));
-    }
-
-    public ProductResponse updateProduct(long productId, ProductUpdateRequest request) {
+    public ProductResponseDto getProduct(long productId) {
         ProductEntity productEntity = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException(("Product not found")));
-        productMapper.updateProduct(productEntity, request);
-
-        return productMapper.toProductResponse(productRepository.save(productEntity));
+                .orElseThrow(() -> new RuntimeException("Product not find" + productId));
+        return productMapper.toProductResponseDto(productEntity);
     }
 
+    public ProductResponseDto updateProduct(long productId, ProductResponseDto productResponseDto) {
+        ProductEntity productEntity = productMapper.toProduct(productResponseDto);
+        productMapper.updateProduct(productEntity, productResponseDto);
+        ProductEntity afterUpdateProduct = productRepository.save(productEntity);
+        return productMapper.toProductResponseDto(afterUpdateProduct);
+    }
+
+    @Transactional
     public void deleteProduct(long productId) {
         productRepository.deleteById(productId);
     }
 
-    public Page<ProductEntity> getAllProducts(Pageable pageable) {
-        return productRepository.findAll(pageable);
+    public List<ProductResponseDto> getProductWithBrandCategoryManufacturing() {
+        return productRepository.findAllWithBrandCategoryManufacturing().stream()
+                .map(productMapper::fromProjection)
+                .collect(Collectors.toList());
     }
-    
+
+    public Page<ProductResponseDto> getAllPage(Pageable pageable) {
+        return productRepository.findAllIn4(pageable).map(productMapper::fromProjection);
+    }
 }

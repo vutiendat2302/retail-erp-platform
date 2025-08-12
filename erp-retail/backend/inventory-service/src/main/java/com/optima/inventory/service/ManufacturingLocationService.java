@@ -1,12 +1,11 @@
 package com.optima.inventory.service;
 
-import com.optima.inventory.dto.request.ManufacturingLocationCreationRequest;
-import com.optima.inventory.dto.request.ManufacturingLocationUpdateRequest;
-import com.optima.inventory.dto.response.ManufacturingLocationResponse;
+import com.optima.inventory.dto.request.ManufacturingLocationRequestDto;
 import com.optima.inventory.entity.ManufacturingLocationEntity;
 import com.optima.inventory.mapper.ManufacturingLocationMapper;
-import com.optima.inventory.reponsitory.ManufacturingLocationRepository;
+import com.optima.inventory.repository.ManufacturingLocationRepository;
 import com.optima.inventory.utils.SnowflakeIdGenerator;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,8 @@ public class ManufacturingLocationService {
     @Autowired
     private ManufacturingLocationMapper manufacturingLocationMapper;
 
-    public ManufacturingLocationEntity createManufacturingLocation(ManufacturingLocationCreationRequest request) {
+    @Transactional
+    public ManufacturingLocationEntity createManufacturingLocation(ManufacturingLocationRequestDto request) {
         ManufacturingLocationEntity manufacturingLocationEntity = manufacturingLocationMapper.toManufacturingLocation(request);
 
         long newManufacturingLocationId = SnowflakeIdGenerator.nextId();
@@ -35,19 +35,21 @@ public class ManufacturingLocationService {
         return manufacturingLocationRepository.findAll();
     }
 
-    public ManufacturingLocationResponse getManufacturingLocation(long manufacturingLocationId) {
-        return manufacturingLocationMapper.toManufacturingLocationResponse(manufacturingLocationRepository.findById(manufacturingLocationId)
-                .orElseThrow(() -> new RuntimeException("Manufacturing Location not found")));
+    public ManufacturingLocationEntity getManufacturingLocation(long manufacturingLocationId) {
+        return manufacturingLocationRepository.findById(manufacturingLocationId)
+                .orElseThrow(() -> new RuntimeException("Manufacturing Location not found"));
     }
 
-    public ManufacturingLocationResponse updateManufacturingLocation(long manufacturingLocationId, ManufacturingLocationUpdateRequest request) {
+    @Transactional
+    public ManufacturingLocationEntity updateManufacturingLocation(long manufacturingLocationId, ManufacturingLocationRequestDto request) {
         ManufacturingLocationEntity manufacturingLocationEntity = manufacturingLocationRepository.findById(manufacturingLocationId)
                 .orElseThrow(() -> new RuntimeException("Manufacturing Location not found"));
         manufacturingLocationMapper.updateManufacturingLocation(manufacturingLocationEntity, request);
 
-        return manufacturingLocationMapper.toManufacturingLocationResponse(manufacturingLocationRepository.save(manufacturingLocationEntity));
+        return manufacturingLocationRepository.save(manufacturingLocationEntity);
     }
 
+    @Transactional
     public void deletedManufacturingLocation(long manufacturingLocationId) {
         manufacturingLocationRepository.deleteById(manufacturingLocationId);
     }

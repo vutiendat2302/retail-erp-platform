@@ -1,12 +1,11 @@
 package com.optima.inventory.service;
 
-import com.optima.inventory.dto.request.CategoryCreationRequest;
-import com.optima.inventory.dto.request.CategoryUpdateRequest;
-import com.optima.inventory.dto.response.CategoryResponse;
+import com.optima.inventory.dto.request.CategoryRequestDto;
 import com.optima.inventory.entity.CategoryEntity;
 import com.optima.inventory.mapper.CategoryMapper;
-import com.optima.inventory.reponsitory.CategoryRepository;
+import com.optima.inventory.repository.CategoryRepository;
 import com.optima.inventory.utils.SnowflakeIdGenerator;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,8 @@ public class CategoryService {
     @Autowired
     private CategoryMapper categoryMapper;
 
-    public CategoryEntity createCategory(CategoryCreationRequest request) {
+    @Transactional
+    public CategoryEntity createCategory(CategoryRequestDto request) {
         CategoryEntity categoryEntity = categoryMapper.toCategory(request);
 
         long newCategoryId = SnowflakeIdGenerator.nextId();
@@ -35,18 +35,20 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public CategoryResponse getCategory(long categoryId) {
-        return categoryMapper.toCategoryResponse(categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("category not found")));
+    public CategoryEntity getCategory(long categoryId) {
+        return categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("category not found"));
     }
 
-    public CategoryResponse updateCategory(long categoryId, CategoryUpdateRequest request) {
+    @Transactional
+    public CategoryEntity updateCategory(long categoryId, CategoryRequestDto request) {
         CategoryEntity categoryEntity = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
         categoryMapper.updateCategory(categoryEntity, request);
 
-        return categoryMapper.toCategoryResponse(categoryRepository.save(categoryEntity));
+        return categoryRepository.save(categoryEntity);
     }
 
+    @Transactional
     public void deleteCategory(long categoryId) {
         categoryRepository.deleteById(categoryId);
     }

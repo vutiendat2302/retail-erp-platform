@@ -1,10 +1,8 @@
 package com.optima.inventory.controller;
 
-import com.optima.inventory.dto.request.StoreProductCreationRequest;
-import com.optima.inventory.dto.request.StoreProductUpdateRequest;
-import com.optima.inventory.dto.response.StoreProductResponse;
+import com.optima.inventory.dto.request.StoreProductRequestDto;
 import com.optima.inventory.entity.StoreProductEntity;
-import com.optima.inventory.reponsitory.StoreProductRepository;
+import com.optima.inventory.repository.StoreProductRepository;
 import com.optima.inventory.service.StoreProductService;
 import com.optima.inventory.service.StoreService;
 import jakarta.validation.Valid;
@@ -24,7 +22,7 @@ public class StoreProductController {
     private StoreService storeService;
 
     @PostMapping
-    public StoreProductEntity createStoreProduct(@RequestBody @Valid StoreProductCreationRequest request) {
+    public StoreProductEntity createStoreProduct(@RequestBody @Valid StoreProductRequestDto request) {
         return storeProductService.createStoreProduct(request);
     }
 
@@ -34,12 +32,12 @@ public class StoreProductController {
     }
 
     @GetMapping("/{storeProductId}")
-    public StoreProductResponse getStoreProduct(@PathVariable("storeProductId") long storeProductId) {
+    public StoreProductEntity getStoreProduct(@PathVariable("storeProductId") long storeProductId) {
         return storeProductService.getStore(storeProductId);
     }
 
     @PutMapping("/{storeProductId}")
-    public StoreProductResponse updateStoreProduct(@PathVariable("storeProductId") long storeProductId, @RequestBody StoreProductUpdateRequest request) {
+    public StoreProductEntity updateStoreProduct(@PathVariable("storeProductId") long storeProductId, @RequestBody StoreProductRequestDto request) {
         return storeProductService.updateStoreProduct(storeProductId, request);
     }
 

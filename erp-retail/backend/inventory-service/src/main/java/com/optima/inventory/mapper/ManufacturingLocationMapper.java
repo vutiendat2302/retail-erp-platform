@@ -1,16 +1,20 @@
 package com.optima.inventory.mapper;
 
-import com.optima.inventory.dto.request.ManufacturingLocationCreationRequest;
-import com.optima.inventory.dto.request.ManufacturingLocationUpdateRequest;
-import com.optima.inventory.dto.response.ManufacturingLocationResponse;
+import com.optima.inventory.dto.request.ManufacturingLocationRequestDto;
+import com.optima.inventory.dto.response.BrandResponseDto;
+import com.optima.inventory.dto.response.ManufacturingLocationResponseDto;
 import com.optima.inventory.entity.ManufacturingLocationEntity;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
+import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
 public interface ManufacturingLocationMapper {
-    ManufacturingLocationEntity toManufacturingLocation(ManufacturingLocationCreationRequest request);
+    @Mapping(target = "id", ignore = true)
+    ManufacturingLocationEntity toManufacturingLocation(ManufacturingLocationRequestDto request);
 
-    ManufacturingLocationResponse toManufacturingLocationResponse(ManufacturingLocationEntity manufacturingLocationEntity);
-    void updateManufacturingLocation(@MappingTarget ManufacturingLocationEntity manufacturingLocationEntity, ManufacturingLocationUpdateRequest request);
+    @Mapping(target = "id", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateManufacturingLocation(@MappingTarget ManufacturingLocationEntity manufacturingLocationEntity, ManufacturingLocationRequestDto request);
+
+    ManufacturingLocationResponseDto toManufacturingLocationResponseDto(ManufacturingLocationEntity manufacturingLocationEntity);
 }
