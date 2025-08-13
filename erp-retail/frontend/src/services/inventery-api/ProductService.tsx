@@ -1,53 +1,35 @@
-import axios from "axios";
-import { listBrands } from "../../services/inventery-api/BrandService";
-const REST_API_PRODUCT_URL = 'http://localhost:8080/optima/api/product';
 
-export const listProducts = () => {
-    return axios.get(REST_API_PRODUCT_URL);
+import api from "./api";
+
+
+type ProductResponseDto = any;
+
+interface PageParams {
+    page?: number;
+    
+    size?: number;
+    sort?: string;
 }
 
-type ProductRequestDto = {
-    name: string;
-    description: string;
-    priceNormal: number;
-    status: boolean;
-    brandId: string;
-    categoryId: string;
-    manufacturingLocationId: string;
-}
+// CRUD
+export const createProduct = (data: ProductResponseDto) => api.post('/api/product', data);
+
+export const getProducts = () => api.get('/api/product');
+
+export const getProduct = (id: string) => api.get(`/api/product/${id}`);
+
+export const updateProduct = (id: string, data: ProductResponseDto) => api.put(`/api/product/${id}`, data);
+
+export const deleteProduct = (id: string) => api.delete(`/api/product/${id}`);
 
 
-export type BrandResponseDto = {
-    id: string;
-    name: string;
-}
+// Phân trang
 
-type CategoryResponseDto = {
-    id: string;
-    name: string;
-}
+export const getPageProducts = ({
+    page = 0,
+    size = 5,
+    sort = 'name,asc',
+}: PageParams= {}) => api.get('/api/product/page', {
+    params: {page, size, sort},
+});
 
-type ManufacturingLocationResponseDto = {
-    id: string;
-    name: string;
-}
-
-type ProductResponseDto = {
-    name: string;
-    description: string;
-    priceNormal: number;
-    status: boolean;
-    brandResponseDto: BrandResponseDto;
-    categoryResponseDto: CategoryResponseDto;
-    manufacturingResponseDto: ManufacturingLocationResponseDto;
-}
-
-export const createProduct = (product: ProductRequestDto) => axios.post<ProductResponseDto>(REST_API_PRODUCT_URL, product);
-
-export const getProduct = (productId: string) => axios.get(REST_API_PRODUCT_URL + '/' + productId);
-
-export const updateProduct = (productId: string, product: ProductRequestDto) => axios.put(REST_API_PRODUCT_URL + '/' + productId, product);
-
-export const deleteProduct = (productId: string) => axios.delete(REST_API_PRODUCT_URL + '/' + productId);
-
-export const fetchAllBrands = () => listBrands();

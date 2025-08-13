@@ -81,8 +81,8 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
             ))
           ) : (
             <tr>
-              <td colSpan={7} className="px-4 py-6 text-center">
                 Không có dữ liệu
+              <td colSpan={7} className="px-4 py-6 text-center">
               </td>
             </tr>
           )}
