@@ -42,6 +42,7 @@ public class ProductController {
 
     @PutMapping("/{productId}")
     public ProductResponseDto updateProduct(@PathVariable("productId") long productId, @RequestBody ProductResponseDto request) {
+
         return productService.updateProduct(productId, request);
     }
 
@@ -50,12 +51,10 @@ public class ProductController {
         productService.deleteProduct(productId);
         return "Product has been deleted";
     }
-
     @GetMapping("/page")
     public ResponseEntity<Page<ProductResponseDto>> getProductsPage(Pageable pageable) {
         return ResponseEntity.ok(productService.getAllPage(pageable));
     }
-
 }
 
 

@@ -29,5 +29,4 @@ public class StoreController {
     public List<StoreResponseDto> getStores() {
         return storeService.getStores();
     }
-
 }

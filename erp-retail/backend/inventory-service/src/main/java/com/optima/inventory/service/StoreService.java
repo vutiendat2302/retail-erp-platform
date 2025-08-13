@@ -23,7 +23,6 @@ public class StoreService {
     @Transactional
     public StoreResponseDto createStore(StoreResponseDto storeResponseDto) {
         StoreEntity storeEntity = storeMapper.toStore(storeResponseDto);
-
         long newStoreId = SnowflakeIdGenerator.nextId();
         while (storeRepository.existsById(newStoreId)) {
             newStoreId = SnowflakeIdGenerator.nextId();

@@ -22,7 +22,6 @@ public class WarehouseService {
     @Transactional
     public WarehouseResponseDto createWarehouse(WarehouseResponseDto warehouseResponseDto) {
         WarehouseEntity warehouseEntity = warehouseMapper.toWarehouse(warehouseResponseDto);
-
         long newWarehouseId = SnowflakeIdGenerator.nextId();
         while (warehouseRepository.existsById(newWarehouseId)) {
             newWarehouseId = SnowflakeIdGenerator.nextId();

@@ -59,4 +59,5 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     left join ManufacturingLocationEntity d on a.manufacturingLocationId = d.id
     """)
     Page<ProductView> findAllIn4(Pageable pageable);
+
 }

@@ -11,6 +11,7 @@ import com.optima.inventory.entity.ProductEntity;
 import com.optima.inventory.entity.WarehouseEntity;
 import com.optima.inventory.repository.InventoryRepository;
 import com.optima.inventory.repository.ProductRepository;
+
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")

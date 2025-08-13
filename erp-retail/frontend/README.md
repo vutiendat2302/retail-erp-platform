@@ -15,7 +15,7 @@ npm run dev
 ```
 - Truy cập địa chỉ hiển thị trên terminal (http://localhost:5173).
 
-### 4. Build dự án để deploy 
+### 4. Build dự án để deploy
 ```sh
 npm run build
 ```

@@ -12,7 +12,6 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
-
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "brandId", ignore = true)
     @Mapping(target = "categoryId", ignore = true)
@@ -30,5 +29,4 @@ public interface ProductMapper {
 
     @Mapping(source = "id", target = "id")
     ProductResponseDto fromProjection(ProductRepository.ProductView view);
-
 }

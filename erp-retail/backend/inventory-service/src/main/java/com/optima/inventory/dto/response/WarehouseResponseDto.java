@@ -16,7 +16,6 @@ public class WarehouseResponseDto {
     private String address;
     private String description;
     private boolean status;
-
     @Column(name = "create_by")
     private long createBy;
 

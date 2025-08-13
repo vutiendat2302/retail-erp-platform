@@ -6,7 +6,6 @@ import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface WarehouseMapper {
-
     @Mapping(target = "id", ignore = true)
     @Mapping(target="createAt", ignore = true)
     @Mapping(target = "updateAt", ignore = true)

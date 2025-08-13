@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class StoreResponseDto {
+
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
     private String name;

@@ -26,6 +26,12 @@ public class ProductService {
     private ProductRepository productRepository;
     @Autowired
     private ProductMapper productMapper;
+    @Autowired
+    private BrandRepository brandRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private ManufacturingLocationRepository manufacturingLocationRepository;
 
     public ProductService(ProductRepository productRepository,
                           ProductMapper productMapper) {
