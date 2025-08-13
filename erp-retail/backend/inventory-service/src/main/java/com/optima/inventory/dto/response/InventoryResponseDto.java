@@ -1,48 +1,30 @@
 package com.optima.inventory.dto.response;
-
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.Column;
-import jakarta.persistence.Id;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
 public class InventoryResponseDto {
-    @Id
-    private long id;
 
-    @Column(name = "warehouse_id")
-    private long warehouseId;
-
-    @Column(name = "product_id")
-    private long productId;
-
-    @Column(name = "quantity_available")
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long id;
     private int quantityAvailable;
-
-    @Column(name = "minimum_quantity")
     private int minimumQuantity;
-
-    @Column(name = "maximum_quantity")
     private int maximumQuantity;
-
-    private Boolean status;
-
-    @Column(name = "create_by")
+    private boolean status;
     private long createBy;
-
-    @Column(name = "create_at")
-    private LocalDateTime createAt;
-
-    @Column(name = "update_by")
     private long updateBy;
-
-    @Column(name = "update_at")
-    private LocalDateTime updateAt;
-
-    @Column(name = "suggest_day_minimum_warehouse")
     private LocalDateTime suggestDayMinimumWarehouse;
+    private String productBatchName;
+    private String productName;
+    private String warehouseName;
 
-    @Column(name = "batch_id")
-    private long batchId;
+    @JsonGetter("status")
+    public String getStatusString() {
+        return this.status ? "Active" : "Inactive";
+    }
 }

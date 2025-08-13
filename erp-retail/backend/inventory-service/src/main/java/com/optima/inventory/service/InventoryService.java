@@ -1,15 +1,19 @@
 package com.optima.inventory.service;
 
 import com.optima.inventory.dto.request.InventoryRequestDto;
+import com.optima.inventory.dto.response.InventoryResponseDto;
 import com.optima.inventory.entity.InventoryEntity;
 import com.optima.inventory.mapper.InventoryMapper;
 import com.optima.inventory.repository.InventoryRepository;
 import com.optima.inventory.utils.SnowflakeIdGenerator;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class InventoryService {
@@ -19,38 +23,32 @@ public class InventoryService {
     private InventoryMapper inventoryMapper;
 
     @Transactional
-    public InventoryEntity createInventory(InventoryRequestDto request) {
-        InventoryEntity inventoryEntity = inventoryMapper.toInventory(request);
+    public InventoryResponseDto createInventory(InventoryResponseDto inventoryResponseDto) {
+        InventoryEntity inventoryEntity = inventoryMapper.toInventory(inventoryResponseDto);
 
-        long newInventoryId = SnowflakeIdGenerator.nextId();
-        while (inventoryRepository.existsById(newInventoryId)) {
-            newInventoryId = SnowflakeIdGenerator.nextId();
+        long newProductId = SnowflakeIdGenerator.nextId();
+        while (inventoryRepository.existsById(newProductId)) {
+            newProductId = SnowflakeIdGenerator.nextId();
         }
-        inventoryEntity.setId(newInventoryId);
+        inventoryEntity.setId(newProductId);
 
-        return inventoryRepository.save(inventoryEntity);
+        return inventoryMapper.toInventoryResponseDto(inventoryRepository.save(inventoryEntity));
     }
 
-    public List<InventoryEntity> getInventories() {
-        return inventoryRepository.findAll();
+    public List<InventoryResponseDto> getInventories() {
+        return inventoryRepository.findAll().stream()
+                .map(inventoryMapper::toInventoryResponseDto)
+                .collect(Collectors.toList());
     }
 
-
-    public InventoryEntity getInventory(long inventoryId) {
-        return inventoryRepository.findById(inventoryId).orElseThrow(() -> new RuntimeException("Inventory not found"));
+    public List<InventoryResponseDto> findInventoryByWarehouse(Long warehouseId) {
+        return inventoryRepository.findInventoryByWarehouse(warehouseId).stream()
+                .map(inventoryMapper::fromInventory)
+                .collect(Collectors.toList());
     }
 
-    @Transactional
-    public InventoryEntity updateInventory(long inventoryId, InventoryRequestDto request) {
-        InventoryEntity inventoryEntity = inventoryRepository.findById(inventoryId)
-                .orElseThrow(() -> new RuntimeException("Inventory not found"));
-        inventoryMapper.updateInventory(inventoryEntity, request);
-
-        return inventoryRepository.save(inventoryEntity);
+    public Page<InventoryResponseDto> getAllPage(Pageable pageable) {
+        return inventoryRepository.findAllInf(pageable).map(inventoryMapper::fromInventory);
     }
 
-    @Transactional
-    public void deleteInventory(long inventoryId) {
-        inventoryRepository.deleteById(inventoryId);
-    }
 }

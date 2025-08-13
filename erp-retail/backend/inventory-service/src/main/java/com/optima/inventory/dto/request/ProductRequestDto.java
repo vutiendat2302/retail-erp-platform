@@ -37,14 +37,14 @@ public class ProductRequestDto {
     @Column(name = "list_image")
     private String listImage;
 
-    @Column(name = "price_normal", precision = 18, scale = 3)
-    private BigDecimal priceNormal;
+    @Column(name = "price_normal")
+    private int priceNormal;
 
     @Column(name = "price_sell")
-    private BigDecimal priceSell;
+    private int priceSell;
 
     @Column(name = "promotion_price")
-    private BigDecimal promotionPrice;
+    private int promotionPrice;
 
     private BigDecimal vat;
     private BigDecimal weight;

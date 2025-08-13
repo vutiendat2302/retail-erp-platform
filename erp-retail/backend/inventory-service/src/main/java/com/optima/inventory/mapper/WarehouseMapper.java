@@ -1,16 +1,24 @@
 package com.optima.inventory.mapper;
 
-import com.optima.inventory.dto.request.WarehouseRequestDto;
+import com.optima.inventory.dto.response.WarehouseResponseDto;
 import com.optima.inventory.entity.WarehouseEntity;
 import org.mapstruct.*;
-import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
 public interface WarehouseMapper {
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target="createAt", ignore = true)
+    @Mapping(target = "updateAt", ignore = true)
+    @Mapping(target  = "status", expression = "java(warehouseResponseDto.getStatusString().equalsIgnoreCase(\"active\"))")
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    WarehouseEntity toWarehouse(WarehouseResponseDto warehouseResponseDto);
 
-    WarehouseEntity toWarehouse(WarehouseRequestDto request);
+    WarehouseResponseDto toWarehouseResponseDto(WarehouseEntity warehouseResponseDto);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target="createAt", ignore = true)
+    @Mapping(target = "updateAt", ignore = true)
+    @Mapping(target  = "status", expression = "java(warehouseResponseDto.getStatusString().equalsIgnoreCase(\"active\"))")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateWarehouse(@MappingTarget WarehouseEntity warehouseEntity, WarehouseRequestDto request);
+    void updateWarehouseResponseDto(@MappingTarget WarehouseEntity warehouseEntity, WarehouseResponseDto warehouseResponseDto);
 }

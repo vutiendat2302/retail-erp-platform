@@ -1,6 +1,7 @@
 package com.optima.inventory.controller;
 
 import com.optima.inventory.dto.request.WarehouseRequestDto;
+import com.optima.inventory.dto.response.WarehouseResponseDto;
 import com.optima.inventory.entity.WarehouseEntity;
 import com.optima.inventory.repository.WarehouseRepository;
 import com.optima.inventory.service.WarehouseService;
@@ -10,8 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
-@RequestMapping("/warehouse")
+@RequestMapping("/api/warehouse")
 public class WarehouseController {
     @Autowired
     private WarehouseService warehouseService;
@@ -19,28 +21,17 @@ public class WarehouseController {
     private WarehouseRepository warehouseRepository;
 
     @PostMapping
-    public WarehouseEntity createWarehouse(@RequestBody @Valid WarehouseRequestDto request) {
-        return warehouseService.createWarehouse(request);
+    public WarehouseResponseDto createWarehouse(@RequestBody @Valid WarehouseResponseDto warehouseResponseDto) {
+        return warehouseService.createWarehouse(warehouseResponseDto);
     }
 
     @GetMapping
-    public List<WarehouseEntity> getWarehouses() {
+    public List<WarehouseResponseDto> getWarehouses() {
         return warehouseService.getWarehouses();
     }
 
     @GetMapping("/{warehouseId}")
-    public WarehouseEntity getWarehouse(@PathVariable("warehouseId") long warehouseId) {
+    public WarehouseEntity getWarehouse(@PathVariable Long warehouseId) {
         return warehouseService.getWarehouse(warehouseId);
-    }
-
-    @PutMapping("/{warehouseId}")
-    public WarehouseEntity updateWarehouse(@PathVariable("warehouseId") long warehouseId, @RequestBody WarehouseRequestDto request) {
-        return warehouseService.updateWarehouse(warehouseId, request);
-    }
-
-    @DeleteMapping("/{warehouseId}")
-    public String deleteWarehouse(@PathVariable("warehouseId") long warehouseId) {
-        warehouseService.deleteWarehouse(warehouseId);
-        return "Warehouse has been deleted";
     }
 }

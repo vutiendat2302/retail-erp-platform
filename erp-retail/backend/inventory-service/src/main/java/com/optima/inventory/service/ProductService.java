@@ -1,6 +1,5 @@
 package com.optima.inventory.service;
 
-import com.optima.inventory.dto.request.ProductRequestDto;
 import com.optima.inventory.dto.response.ProductResponseDto;
 import com.optima.inventory.entity.BrandEntity;
 import com.optima.inventory.entity.CategoryEntity;
@@ -14,6 +13,8 @@ import com.optima.inventory.repository.ProductRepository;
 import com.optima.inventory.utils.SnowflakeIdGenerator;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,26 +34,15 @@ public class ProductService {
     private ManufacturingLocationRepository manufacturingLocationRepository;
 
     public ProductService(ProductRepository productRepository,
-                          ProductMapper productMapper,
-                          BrandRepository brandRepository,
-                          CategoryRepository categoryRepository,
-                          ManufacturingLocationRepository manufacturingLocationRepository) {
+                          ProductMapper productMapper) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
-        this.brandRepository = brandRepository;
-        this.categoryRepository = categoryRepository;
-        this.manufacturingLocationRepository = manufacturingLocationRepository;
     }
 
     @Transactional
-    public ProductResponseDto createProduct(ProductRequestDto request) {
-        BrandEntity brand = brandRepository.findById(request.getBrandId())
-                .orElseThrow(() -> new RuntimeException("Brand not found with ID: " + request.getBrandId()));
-        CategoryEntity category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found with ID: " + request.getCategoryId()));
-        ManufacturingLocationEntity manufacturingLocation = manufacturingLocationRepository.findById(request.getManufacturingLocationId())
-                .orElseThrow(() -> new RuntimeException("Manufacturing Location not found with ID: " + request.getManufacturingLocationId()));
-        ProductEntity productEntity = productMapper.toProduct(request, brand, category, manufacturingLocation);
+    public ProductResponseDto createProduct(ProductResponseDto productResponseDto) {
+
+        ProductEntity productEntity = productMapper.toProduct(productResponseDto);
 
         long newProductId = SnowflakeIdGenerator.nextId();
         while (productRepository.existsById(newProductId)) {
@@ -76,19 +66,9 @@ public class ProductService {
         return productMapper.toProductResponseDto(productEntity);
     }
 
-    public ProductResponseDto updateProduct(long productId, ProductRequestDto request) {
-
-        ProductEntity productEntity = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException(("Product not found")));
-
-        BrandEntity brand = brandRepository.findById(request.getBrandId())
-                .orElseThrow(() -> new RuntimeException("Brand not found with ID: " + request.getBrandId()));
-        CategoryEntity category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found with ID: " + request.getCategoryId()));
-        ManufacturingLocationEntity manufacturingLocation = manufacturingLocationRepository.findById(request.getManufacturingLocationId())
-                .orElseThrow(() -> new RuntimeException("Manufacturing Location not found with ID: " + request.getManufacturingLocationId()));
-
-        productMapper.updateProduct(productEntity, request, brand, category, manufacturingLocation);
+    public ProductResponseDto updateProduct(long productId, ProductResponseDto productResponseDto) {
+        ProductEntity productEntity = productMapper.toProduct(productResponseDto);
+        productMapper.updateProduct(productEntity, productResponseDto);
         ProductEntity afterUpdateProduct = productRepository.save(productEntity);
         return productMapper.toProductResponseDto(afterUpdateProduct);
     }
@@ -96,5 +76,15 @@ public class ProductService {
     @Transactional
     public void deleteProduct(long productId) {
         productRepository.deleteById(productId);
+    }
+
+    public List<ProductResponseDto> getProductWithBrandCategoryManufacturing() {
+        return productRepository.findAllWithBrandCategoryManufacturing().stream()
+                .map(productMapper::fromProjection)
+                .collect(Collectors.toList());
+    }
+
+    public Page<ProductResponseDto> getAllPage(Pageable pageable) {
+        return productRepository.findAllIn4(pageable).map(productMapper::fromProjection);
     }
 }

@@ -1,5 +1,8 @@
 package com.optima.inventory.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import lombok.Data;
@@ -8,8 +11,9 @@ import java.time.LocalDateTime;
 
 @Data
 public class StoreResponseDto {
-    @Id
-    private long id;
+
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long id;
     private String name;
     private String address;
     private String description;
@@ -17,14 +21,21 @@ public class StoreResponseDto {
     @Column(name = "create_by")
     private long createBy;
 
-    @Column(name = "create_at")
-    private LocalDateTime createAt;
-
     @Column(name = "update_by")
     private long updateBy;
 
-    @Column(name = "update_at")
-    private LocalDateTime updateAt;
+    private boolean status;
 
-    private Boolean status;
+    @JsonGetter("status")
+    public String getStatusString() {
+        return this.status ? "Active" : "Inactive";
+    }
+
+    public void isStatus(String status) {
+        if (status.equalsIgnoreCase("active")) {
+            this.status = true;
+        } else {
+            this.status = false;
+        }
+    }
 }

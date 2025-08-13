@@ -12,7 +12,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
-@RequestMapping("/api/manufacturing_location")
+@RequestMapping("/api/manufacturingLocation")
 public class ManufacturingLocationController {
     @Autowired
     private ManufacturingLocationService manufacturingLocationService;

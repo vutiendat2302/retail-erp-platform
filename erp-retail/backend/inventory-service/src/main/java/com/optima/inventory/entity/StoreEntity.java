@@ -2,12 +2,11 @@ package com.optima.inventory.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 public class StoreEntity {
     @Id
     @JsonSerialize(using = ToStringSerializer.class)
-    private long id;
+    private Long id;
     private String name;
     private String email;
     private String address;
@@ -34,5 +33,16 @@ public class StoreEntity {
     @Column(name = "update_at")
     private LocalDateTime updateAt;
 
-    private Boolean status;
+    private boolean status;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createAt = LocalDateTime.now();
+        this.updateAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updateAt = LocalDateTime.now();
+    }
 }

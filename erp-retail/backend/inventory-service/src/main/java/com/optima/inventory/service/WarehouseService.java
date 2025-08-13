@@ -1,6 +1,6 @@
 package com.optima.inventory.service;
 
-import com.optima.inventory.dto.request.WarehouseRequestDto;
+import com.optima.inventory.dto.response.WarehouseResponseDto;
 import com.optima.inventory.entity.WarehouseEntity;
 import com.optima.inventory.mapper.WarehouseMapper;
 import com.optima.inventory.repository.WarehouseRepository;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class WarehouseService {
@@ -19,20 +20,22 @@ public class WarehouseService {
     private WarehouseMapper warehouseMapper;
 
     @Transactional
-    public WarehouseEntity createWarehouse(WarehouseRequestDto request) {
-        WarehouseEntity warehouseEntity = warehouseMapper.toWarehouse(request);
-
+    public WarehouseResponseDto createWarehouse(WarehouseResponseDto warehouseResponseDto) {
+        WarehouseEntity warehouseEntity = warehouseMapper.toWarehouse(warehouseResponseDto);
         long newWarehouseId = SnowflakeIdGenerator.nextId();
         while (warehouseRepository.existsById(newWarehouseId)) {
             newWarehouseId = SnowflakeIdGenerator.nextId();
         }
         warehouseEntity.setId(newWarehouseId);
+        warehouseEntity.setStatus(warehouseResponseDto.getStatusString().equalsIgnoreCase("active"));
 
-        return warehouseRepository.save(warehouseEntity);
+        return warehouseMapper.toWarehouseResponseDto(warehouseRepository.save(warehouseEntity));
     }
 
-    public List<WarehouseEntity> getWarehouses() {
-        return warehouseRepository.findAll();
+    public List<WarehouseResponseDto> getWarehouses() {
+        return warehouseRepository.findAll().stream()
+                .map(warehouseMapper::toWarehouseResponseDto)
+                .collect(Collectors.toList());
     }
 
 
@@ -41,10 +44,10 @@ public class WarehouseService {
     }
 
     @Transactional
-    public WarehouseEntity updateWarehouse(long warehouseId, WarehouseRequestDto request) {
+    public WarehouseEntity updateWarehouse(long warehouseId, WarehouseResponseDto request) {
         WarehouseEntity warehouseEntity = warehouseRepository.findById(warehouseId)
                 .orElseThrow(() -> new RuntimeException("Warehouse not found"));
-        warehouseMapper.updateWarehouse(warehouseEntity, request);
+        warehouseMapper.updateWarehouseResponseDto(warehouseEntity, request);
 
         return warehouseRepository.save(warehouseEntity);
     }

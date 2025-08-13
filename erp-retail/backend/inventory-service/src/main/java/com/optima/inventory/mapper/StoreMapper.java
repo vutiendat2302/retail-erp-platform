@@ -7,10 +7,19 @@ import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface StoreMapper {
-    StoreEntity toStore(StoreRequestDto request);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target="createAt", ignore = true)
+    @Mapping(target = "updateAt", ignore = true)
+    @Mapping(target  = "status", expression = "java(storeResponseDto.getStatusString().equalsIgnoreCase(\"active\"))")
+    StoreEntity toStore(StoreResponseDto storeResponseDto);
+
+    StoreResponseDto toStoreResponseDto(StoreEntity storeEntity);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target="createAt", ignore = true)
+    @Mapping(target = "updateAt", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateStore(@MappingTarget StoreEntity storeEntity, StoreRequestDto request);
+    @Mapping(target  = "status", expression = "java(storeResponseDto.getStatusString().equalsIgnoreCase(\"active\"))")
+    void updateStore(@MappingTarget StoreEntity storeEntity, StoreResponseDto storeResponseDto);
 
 }

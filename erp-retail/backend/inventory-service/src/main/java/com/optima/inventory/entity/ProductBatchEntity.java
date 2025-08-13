@@ -20,6 +20,8 @@ public class ProductBatchEntity {
     private long id;
     private String description;
 
+    private String name;
+
     @Column(name = "create_by")
     private long createBy;
 

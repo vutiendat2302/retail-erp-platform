@@ -9,6 +9,9 @@ import com.optima.inventory.repository.ProductRepository;
 import com.optima.inventory.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,14 +24,9 @@ public class ProductController {
     private ProductService productService;
     @Autowired
     private ProductRepository productRepository;
-    @Autowired
-    private BrandRepository brandRepository;
-
-    @Autowired
-    private CategoryRepository categoryRepository;
 
     @PostMapping
-    public ProductResponseDto createProduct(@RequestBody @Valid ProductRequestDto request) {
+    public ProductResponseDto createProduct(@RequestBody @Valid ProductResponseDto request) {
         return productService.createProduct(request);
     }
 
@@ -43,7 +41,8 @@ public class ProductController {
     }
 
     @PutMapping("/{productId}")
-    public ProductResponseDto updateProduct(@PathVariable("productId") long productId, @RequestBody ProductRequestDto request) {
+    public ProductResponseDto updateProduct(@PathVariable("productId") long productId, @RequestBody ProductResponseDto request) {
+
         return productService.updateProduct(productId, request);
     }
 
@@ -52,5 +51,12 @@ public class ProductController {
         productService.deleteProduct(productId);
         return "Product has been deleted";
     }
-
+    @GetMapping("/page")
+    public ResponseEntity<Page<ProductResponseDto>> getProductsPage(Pageable pageable) {
+        return ResponseEntity.ok(productService.getAllPage(pageable));
+    }
 }
+
+
+
+

@@ -1,5 +1,5 @@
 package com.optima.inventory.dto.response;
-
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.Column;
@@ -14,8 +14,9 @@ public class ProductResponseDto {
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
-    @Column(name = "qr_code")
-    private String qrCode;
+    @Column(name = "sku")
+    private String sku;
+
 
     private String name;
 
@@ -23,26 +24,21 @@ public class ProductResponseDto {
     private String seoTitle;
 
     private String description;
-    private Boolean status;
+    private boolean status;
     private String tag;
-    private String image;
-
-    @Column(name = "list_image")
-    private String listImage;
 
     @Column(name = "price_normal")
-    private BigDecimal priceNormal;
+    private int priceNormal;
 
     @Column(name = "price_sell")
-    private BigDecimal priceSell;
+    private int priceSell;
 
     @Column(name = "promotion_price")
-    private BigDecimal promotionPrice;
+    private int promotionPrice;
 
     private BigDecimal vat;
     private BigDecimal weight;
     private String warranty;
-    private LocalDateTime hot;
 
     @Column(name = "view_count")
     private int viewCount;
@@ -51,20 +47,17 @@ public class ProductResponseDto {
     private String metaKeyword;
 
     @Column(name = "create_by")
-    private long createBy;
-
-    @Column(name = "create_at")
-    private LocalDateTime createAt;
+    private Long createBy;
 
     @Column(name = "update_by")
-    private long updateBy;
+    private Long updateBy;
 
-    @Column(name = "update_at")
-    private LocalDateTime updateAt;
+    private String categoryName;
+    private String brandName;
+    private String manufacturingLocationName;
 
-    private Boolean sellable;
-
-    private BrandResponseDto brandResponseDto;
-    private CategoryResponseDto categoryResponseDto;
-    private ManufacturingLocationResponseDto manufacturingLocationResponseDto;
+    @JsonGetter("status")
+    public String getStatusString() {
+        return this.status ? "Active" : "Inactive";
+    }
 }

@@ -1,6 +1,7 @@
 package com.optima.inventory.service;
 
 import com.optima.inventory.dto.request.StoreRequestDto;
+import com.optima.inventory.dto.response.StoreResponseDto;
 import com.optima.inventory.entity.StoreEntity;
 import com.optima.inventory.mapper.StoreMapper;
 import com.optima.inventory.repository.StoreRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StoreService {
@@ -19,37 +21,22 @@ public class StoreService {
     private StoreMapper storeMapper;
 
     @Transactional
-    public StoreEntity createStore(StoreRequestDto request) {
-        StoreEntity storeEntity = storeMapper.toStore(request);
-
+    public StoreResponseDto createStore(StoreResponseDto storeResponseDto) {
+        StoreEntity storeEntity = storeMapper.toStore(storeResponseDto);
         long newStoreId = SnowflakeIdGenerator.nextId();
         while (storeRepository.existsById(newStoreId)) {
             newStoreId = SnowflakeIdGenerator.nextId();
         }
         storeEntity.setId(newStoreId);
+        storeEntity.setStatus(storeResponseDto.getStatusString().equalsIgnoreCase("active"));
 
-        return storeRepository.save(storeEntity);
+        return storeMapper.toStoreResponseDto(storeRepository.save(storeEntity));
     }
 
-    public List<StoreEntity> getStores() {
-        return storeRepository.findAll();
+    public List<StoreResponseDto> getStores() {
+        return storeRepository.findAll().stream()
+                .map(storeMapper::toStoreResponseDto)
+                .collect(Collectors.toList());
     }
 
-    public StoreEntity getStore(long storeId) {
-        return storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("store not found"));
-    }
-
-    @Transactional
-    public StoreEntity updateStore(long storeId, StoreRequestDto request) {
-        StoreEntity storeEntity = storeRepository.findById(storeId)
-                .orElseThrow(() -> new RuntimeException("Store not found"));
-        storeMapper.updateStore(storeEntity, request);
-
-        return storeRepository.save(storeEntity);
-    }
-
-    @Transactional
-    public void deleteStore(long storeId) {
-        storeRepository.deleteById(storeId);
-    }
 }
