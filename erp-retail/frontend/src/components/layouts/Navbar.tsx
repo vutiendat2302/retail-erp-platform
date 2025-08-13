@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { fadeIn } from '../../utils/motion';
@@ -22,10 +23,12 @@ import {
   X
 } from 'lucide-react';
 
+
 interface NavLink {
   href: string;
   label: string;
 }
+
 
 export const Navbar: React.FC = () => {
   const location = useLocation();

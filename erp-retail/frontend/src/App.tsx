@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainLayout from './components/layouts/MainLayout';
+
 import Home from './pages/Dashboard';
 import Employee from './pages/Employee';
 import Schedule from './pages/Schedule';

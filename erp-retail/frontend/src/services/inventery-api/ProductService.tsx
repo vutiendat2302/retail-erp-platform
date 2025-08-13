@@ -1,3 +1,4 @@
+
 import api from "./api";
 
 
@@ -31,3 +32,4 @@ export const getPageProducts = ({
 }: PageParams= {}) => api.get('/api/product/page', {
     params: {page, size, sort},
 });
+

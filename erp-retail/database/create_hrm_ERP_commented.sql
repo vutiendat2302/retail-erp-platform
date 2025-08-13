@@ -65,7 +65,6 @@ CREATE TABLE employee (
     join_date DATE COMMENT 'Ngày vào làm',
     salary_type VARCHAR(10) COMMENT 'Hình thức lương: daily hoặc shift',
     salary_per_day DECIMAL(8,2) COMMENT 'Lương theo ngày',
-    salary_per_shift DECIMAL(8,2) COMMENT 'Lương theo ca',
     status VARCHAR(20) COMMENT 'Trạng thái làm việc (active/inactive)',
     created_at DATETIME COMMENT 'Ngày tạo',
     created_by BIGINT COMMENT 'Người tạo',

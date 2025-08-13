@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card';
 import { TableBody, TableCell, TableHead, TableRow, TableHeader, Table } from '../../ui/table';
@@ -164,3 +165,4 @@ export default ProductTableComponent;
 export function ProductViewData() {
 
 }
+

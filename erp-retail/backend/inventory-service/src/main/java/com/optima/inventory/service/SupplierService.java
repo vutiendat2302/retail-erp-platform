@@ -1,17 +1,15 @@
 package com.optima.inventory.service;
 
-import com.optima.inventory.dto.request.SupplierCreationRequest;
-import com.optima.inventory.dto.request.SupplierUpdateRequest;
-import com.optima.inventory.dto.response.SupplierResponse;
+import com.optima.inventory.dto.request.SupplierRequestDto;
 import com.optima.inventory.entity.SupplierEntity;
 import com.optima.inventory.mapper.SupplierMapper;
-import com.optima.inventory.reponsitory.SupplierRepository;
+import com.optima.inventory.repository.SupplierRepository;
 import com.optima.inventory.utils.SnowflakeIdGenerator;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 @Service
 public class SupplierService {
@@ -20,7 +18,8 @@ public class SupplierService {
     @Autowired
     private SupplierMapper supplierMapper;
 
-    public SupplierEntity createSupplier(SupplierCreationRequest request) {
+    @Transactional
+    public SupplierEntity createSupplier(SupplierRequestDto request) {
         SupplierEntity supplierEntity = supplierMapper.toSupplier(request);
 
         long newSupplierId = SnowflakeIdGenerator.nextId();
@@ -36,18 +35,20 @@ public class SupplierService {
         return supplierRepository.findAll();
     }
 
-    public SupplierResponse getSupplier(long supplierId) {
-        return supplierMapper.toSupplierResponse(supplierRepository.findById(supplierId).orElseThrow(() -> new RuntimeException("Supplier not found")));
+    public SupplierEntity getSupplier(long supplierId) {
+        return supplierRepository.findById(supplierId).orElseThrow(() -> new RuntimeException("Supplier not found"));
     }
 
-    public SupplierResponse updateSupplier(long supplierId, SupplierUpdateRequest request) {
+    @Transactional
+    public SupplierEntity updateSupplier(long supplierId, SupplierRequestDto request) {
         SupplierEntity supplierEntity = supplierRepository.findById(supplierId)
                 .orElseThrow(() -> new RuntimeException("Supplier not found"));
         supplierMapper.updateSupplier(supplierEntity, request);
 
-        return supplierMapper.toSupplierResponse(supplierRepository.save(supplierEntity));
+        return supplierRepository.save(supplierEntity);
     }
 
+    @Transactional
     public void deleteSupplier(long supplierId) {
         supplierRepository.deleteById(supplierId);
     }

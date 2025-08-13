@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: hrm-service
+  datasource:
+    url: jdbc:mysql://hrm-db:3306/hrm_db
+    username: root
+    password: 12122005
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect

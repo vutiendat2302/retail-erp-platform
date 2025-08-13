@@ -1,5 +1,7 @@
 package com.optima.inventory.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -13,14 +15,18 @@ import java.time.LocalDateTime;
 @Data
 public class CategoryEntity {
     @Id
-    private long id;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long id;
+
     private String name;
 
     @Column(name = "seo_title")
     private String seoTitle;
     private String description;
     private Boolean status;
-    private long parent_id;
+
+    @Column(name = "parent_id", nullable = true)
+    private Long parentId;
 
     @Column(name = "meta_keyword")
     private String metaKeyword;

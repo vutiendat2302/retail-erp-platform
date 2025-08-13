@@ -1,3 +1,4 @@
+
 import React, {useState, useEffect} from 'react';
 import ProductTableComponent from '../components/inventory_components/products/ProductTableComponent';
 import ProductForm from '../components/inventory_components/products/ProductForm';
@@ -194,3 +195,4 @@ const Product: React.FC = () => {
     );
   };
 export default Product;
+

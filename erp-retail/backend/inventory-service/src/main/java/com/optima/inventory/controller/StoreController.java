@@ -1,10 +1,8 @@
 package com.optima.inventory.controller;
 
-import com.optima.inventory.dto.request.StoreCreationRequest;
-import com.optima.inventory.dto.request.StoreUpdateRequest;
-import com.optima.inventory.dto.response.StoreResponse;
+import com.optima.inventory.dto.request.StoreRequestDto;
 import com.optima.inventory.entity.StoreEntity;
-import com.optima.inventory.reponsitory.StoreRepository;
+import com.optima.inventory.repository.StoreRepository;
 import com.optima.inventory.service.StoreService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,7 @@ public class StoreController {
     private StoreRepository storeRepository;
 
     @PostMapping
-    public StoreEntity createStore(@RequestBody @Valid StoreCreationRequest request) {
+    public StoreEntity createStore(@RequestBody @Valid StoreRequestDto request) {
         return storeService.createStore(request);
     }
 
@@ -31,12 +29,12 @@ public class StoreController {
     }
 
     @GetMapping("/{storeId}")
-    public StoreResponse getStore(@PathVariable("storeId") long storeId) {
+    public StoreEntity getStore(@PathVariable("storeId") long storeId) {
         return storeService.getStore(storeId);
     }
 
     @PutMapping("/{storeId}")
-    public StoreResponse updateStore(@PathVariable("storeId") long storeId, @RequestBody StoreUpdateRequest request) {
+    public StoreEntity updateStore(@PathVariable("storeId") long storeId, @RequestBody StoreRequestDto request) {
         return storeService.updateStore(storeId, request);
     }
 
