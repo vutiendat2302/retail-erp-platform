@@ -1,0 +1,107 @@
+# Docker Compose sẽ tự động sử dụng version mới nhất.
+
+services:
+  # Cấu hình POS Service
+  pos-service:
+    build: ./pos-service
+    ports:
+      - "8084:8080"
+    # Đảm bảo Eureka Server và Database khởi động trước và sẵn sàng
+    depends_on:
+      pos-db:
+        condition: service_healthy
+    links:
+      - pos-db
+    networks:
+      - my_network
+    container_name: pos-service
+
+  # Cấu hình Inventory Service
+  inventory-service:
+    build: ./inventory-service
+    ports:
+      - "8083:8080"
+    # Đảm bảo Database khởi động trước và sẵn sàng
+    depends_on:
+      inventory-db:
+        condition: service_healthy
+    links:
+      - inventory-db
+    networks:
+      - my_network
+    container_name: inventory-service
+  hrm-service:
+    build: ./hrm-service
+    ports:
+      - "8081:8080"
+    depends_on:
+      hrm-db:
+        condition: service_healthy
+    links:
+      - hrm-db
+    networks:
+      - my_network
+    container_name: hrm-service
+
+  # Cấu hình Database cho POS
+  pos-db:
+    image: mysql:8.0
+    container_name: pos_database
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 12122005
+      MYSQL_DATABASE: pos_db
+    volumes:
+      - ./db_init_pos:/docker-entrypoint-initdb.d
+    # Healthcheck để kiểm tra xem MySQL đã sẵn sàng nhận kết nối hay chưa
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "--password=12122005"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - my_network
+
+  # Cấu hình Database cho Inventory
+  inventory-db:
+    image: mysql:8.0
+    container_name: inventory_database
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 12122005
+      MYSQL_DATABASE: inventory_db
+    volumes:
+      - ./db_init_inventory:/docker-entrypoint-initdb.d
+    # Healthcheck để kiểm tra xem MySQL đã sẵn sàng nhận kết nối hay chưa
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "--password=12122005"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - my_network
+  hrm-db:
+    image: mysql:8.0
+    container_name: hrm_database
+    ports:
+      - "3309:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 12122005
+      MYSQL_DATABASE: hrm_db
+    volumes:
+      - ./db_init_hrm:/docker-entrypoint-initdb.d
+    # Healthcheck để kiểm tra xem MySQL đã sẵn sàng nhận kết nối hay chưa
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "--password=12122005" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - my_network
+
+
+networks:
+  my_network:
+    driver: bridge
