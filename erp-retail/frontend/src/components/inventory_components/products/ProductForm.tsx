@@ -3,26 +3,78 @@ import type { ChangeEvent, FormEvent } from 'react';
 import { Label } from '../../ui/label';
 import { Textarea } from '../../../components/ui/textarea';
 import { Button } from '../../ui/button';
+import { getBrandName, getCategoryName, getManufacturingName } from '../../../services/inventery-api/ProductService';
+interface ProductFormData {
+  id: string;
+  name: string;
+  description: string;
+  priceNormal: number;
+  status: string;
+  brandName: string;
+  categoryName: string;
+  manufacturingLocationName: string;
+  sku: string;
+  tag: string;
+  priceSell: number;
+  promotionPrice: number;
+  metaKeyword: string;
+  seoTitle: string;
+  updateBy: string;
+  brandId: string;
+  categoryId: string;
+  manufacturingLocationId: string;
+}
+
 interface Product {
   id: string;
   name: string;
   description: string;
   priceNormal: number;
-  status: boolean;
+  status: string;
   brandName: string;
   categoryName: string;
   manufacturingLocationName: string;
+  sku: string;
+  tag: string;
+  priceSell: number;
+  promotionPrice: number;
+  metaKeyword: string;
+  seoTitle: string;
+  updateBy: string;
+  updateAt: string;
+  createBy: string;
+  createAt: string;
+  brandId: string;
+  categoryId: string;
+  manufacturingLocationId: string;
+  weight: number;
+  vat: number;
+}
+
+interface CategoryName {
+  id: string;
+  name: string;
+}
+
+interface BrandName {
+  id: string;
+  name: string;
+}
+
+interface ManufacturingLocationName {
+  id: string;
+  name: string;
 }
 
 interface ProductFormProps {
   initialData?: Product | null;
-  onSubmit: (data: Product) => void | Promise<void>;
+  onSubmit: (data: ProductFormData) => void | Promise<void>;
   onClose: () => void;
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({
   initialData, onSubmit, onClose }) => {
-  const [formData, setFormData] = useState<Product>({
+  const [formData, setFormData] = useState<ProductFormData>({
     id: '',
     name: '',
     description: '',
@@ -30,8 +82,58 @@ const ProductForm: React.FC<ProductFormProps> = ({
     brandName: '',
     categoryName: '',
     manufacturingLocationName: '',
-    status: true,
+    status: 'inactive',
+    sku: '',
+    tag: '',
+    priceSell: 0,
+    promotionPrice: 0,
+    metaKeyword: '',
+    seoTitle: '',
+    updateBy: '',
+    brandId: '',
+    categoryId: '',
+    manufacturingLocationId: '',
   });
+
+  const [categoryName, setCategoryName] = useState<CategoryName[]>([]);
+  useEffect(() => {
+    const fetchCategoryName = async () => {
+      try {
+        const res = await getCategoryName();
+        setCategoryName(res.data);
+      } catch (error) {
+        console.error("Fail to fetch error category name: ", error);
+      }
+    }
+
+    fetchCategoryName();
+  }, []);
+
+  const [brandName, setBrandName] = useState<BrandName[]>([]);
+  useEffect(() => {
+    const fetchBrandName = async () => {
+      try {
+        const res = await getBrandName();
+        setBrandName(res.data);
+      } catch (error) {
+        console.error("Fali to fetch error brand", error);
+      }
+    }
+    fetchBrandName();
+  }, []);
+
+  const [manufacturingLocationName, setManufacturingLocationName] = useState<ManufacturingLocationName[]>([]);
+  useEffect(() => {
+    const fetchManufacturingLocationName = async () => {
+      try {
+        const res = await getManufacturingName();
+        setManufacturingLocationName(res.data);
+      } catch (error) {
+        console.error("Fali to fetch error manufacturing", error);
+      }
+    }
+    fetchManufacturingLocationName();
+  }, []);
 
   useEffect(() => {
     if (initialData) {
@@ -43,8 +145,19 @@ const ProductForm: React.FC<ProductFormProps> = ({
         brandName: initialData.brandName || '',
         categoryName: initialData.categoryName || '',
         manufacturingLocationName: initialData.manufacturingLocationName || '',
-        status: initialData.status,
+        status: initialData.status || 'inactive',
+        sku: initialData.sku || '',
+        tag: initialData.tag || '',
+        priceSell: initialData.priceSell || 0,
+        promotionPrice: initialData.promotionPrice || 0,
+        metaKeyword: initialData.metaKeyword || '',
+        seoTitle: initialData.seoTitle || '',
+        updateBy: initialData.updateBy || '',
+        brandId: initialData.brandId || '',
+        categoryId: initialData.categoryId || '',
+        manufacturingLocationId: initialData.manufacturingLocationId || '',
       });
+
     } else {
       setFormData({
         id: '',
@@ -54,14 +167,65 @@ const ProductForm: React.FC<ProductFormProps> = ({
         brandName: '',
         categoryName: '',
         manufacturingLocationName: '',
-        status: true,
-          })
-        }
+        status: 'inactive',
+        sku: '',
+        tag: '',
+        priceSell: 0,
+        promotionPrice: 0,
+        metaKeyword: '',
+        seoTitle: '',
+        updateBy: '',
+        brandId: '',
+        categoryId: '',
+        manufacturingLocationId: '',
+      })
+    }
   }, [initialData]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const {name, value} = e.target;
     setFormData((prev) => ({...prev, [name]: value}));
+    if (name === "categoryId") {
+      const selectedCategory = categoryName.find((cat) => cat.id === value);
+      setFormData((prev) => ({
+        ...prev,
+        categoryId: value,
+        categoryName: selectedCategory ? selectedCategory.name : "",
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+
+    if (name == "brandId") {
+      const selectedBrand = brandName.find((brand) => brand.id === value);
+      setFormData((prev) => ({
+        ...prev,
+        brandId: value,
+        brandName: selectedBrand ? selectedBrand.name: "",
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+
+    if (name == "manufacturingLocationId") {
+      const selectedManufacturing = manufacturingLocationName.find((manu) => manu.id === value);
+      setFormData((prev) => ({
+        ...prev,
+        manufacturingLocationId: value,
+        manufacturingLocationName: selectedManufacturing ? selectedManufacturing.name: "",
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = (e: FormEvent) => {
@@ -69,6 +233,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
     console.log("Form data gửi đi:", formData);
     onSubmit(formData);
   };
+
+  
 
   return (
         <form onSubmit={handleSubmit} className='space-y-4'>
@@ -85,6 +251,21 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 placeholder="Nhập tên sản phẩm"
                 required
                 className="w-full border px-2 py-1 rounded"
+              />
+            </div>
+
+            {/* sku */}
+            <div className='space-y-2'>
+              <Label htmlFor="sku">SKU</Label>
+              <input
+                id = 'sku'
+                type = 'text'
+                name = 'sku'
+                value = {formData.sku}
+                onChange={handleChange}
+                placeholder='Nhập mã sản phẩm'
+                required
+                className='w-full border px-2 py-1 rounded'
               />
             </div>
 
@@ -106,54 +287,75 @@ const ProductForm: React.FC<ProductFormProps> = ({
             {/*status*/}
             <div className="space-y-2">
               <Label className='block mb-1'>Status</Label>
-              <input
+              <select
                 id="status"
-                type="checkbox"
                 name="status"
-                checked={formData.status}
+                value={formData.status}
                 onChange={handleChange}
+                className="w-full border px-2 py-1 rounded"
                 required
-              />
+              >
+                <option value = "active">Active</option>
+                <option value = "inactive">Inactive</option>
+              </select>
             </div>
 
             {/*brand*/}
             <div>
               <Label className='block mb-1'>Brand</Label>
-              <input
-              id="brandName"
-              type="text"
-              name="brandName"
-              value={formData.brandName}
-              onChange={handleChange}
-              className="w-full border px-2 py-1 rounded"
-              />
+              <select
+                id = "brandId"
+                name = "brandId"
+                value = {formData.brandId}
+                onChange={handleChange}
+                className='w-full border px-2 py-1 rounded'
+              >
+                <option value = "">--Chọn brand--</option>
+                {brandName.map(brand => (
+                  <option key = {brand.id} value = {brand.id}>
+                    {brand.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/*category*/}
             <div>
               <Label className='block mb-1'>Category</Label>
-              <input
-                id="categoryName"
-                type="text"
-                name="categoryName"
-                value={formData.categoryName}
-                onChange={handleChange}
+              <select
+                id="categoryId"
+                name="categoryId"
+                value={formData.categoryId}
+                onChange= {handleChange}
                 className="w-full border px-2 py-1 rounded"
-              />
+              >
+                <option value="">-- Chọn Category --</option>
+                {categoryName.map(cat => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
             </div>
         
 
             {/*manufacturing*/}
             <div>
               <Label className='block mb-1'>ManufacturingLocation</Label>
-              <input
-                id="manufacturingLocationName"
-                type="text"
-                name="manufacturingLocationName"
-                value={formData.manufacturingLocationName}
+              <select
+                id = "manufacturingLocationId"
+                name = "manufacturingLocationId"
+                value = {formData.manufacturingLocationId}
+                className='w-full border px-2 py-1 rounded'
                 onChange={handleChange}
-                className="w-full border px-2 py-1 rounded"
-              />
+              >
+                <option value = "">--Chọn manufacturing--</option>
+                {manufacturingLocationName.map(manu => (
+                  <option key = {manu.id} value = {manu.id}>
+                    {manu.name}
+                  </option>
+                ))}
+              </select>
             </div>
         </div>
 

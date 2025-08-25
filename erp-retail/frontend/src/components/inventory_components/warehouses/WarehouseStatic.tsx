@@ -1,20 +1,16 @@
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card';
-import { Button } from '../../ui/button';
-import { Input } from '../../ui/input';
-import { Badge } from '../../ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../../ui/dialog';
 import { Plus, Search, Package, AlertTriangle, TrendingUp, DollarSign } from 'lucide-react';
+import { formatCurrency } from '../Convert';
 
-interface ProductStaticData {
+interface WarehouseStaticData {
   totalElements: number;
-  countProducActive: number;
+  totalPriceNormal: number;
 }
 
-const ProductStatic: React.FC<ProductStaticData> = ({
+const WarehouseStatic: React.FC<WarehouseStaticData> = ({
   totalElements,
-  countProducActive,
+  totalPriceNormal,
 }) =>  {
   return (
     <div className="p-6 w-[98%] mx-auto">
@@ -32,16 +28,16 @@ const ProductStatic: React.FC<ProductStaticData> = ({
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng sản phẩm đang Active</CardTitle>
+            <CardTitle className="text-sm font-medium">Tổng giá trị kho</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{countProducActive}</div>
+            <div className="text-2xl font-bold">{formatCurrency(totalPriceNormal)}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng số Brand</CardTitle>
+            <CardTitle className="text-sm font-medium">Số sản phẩm sắp hết hạn</CardTitle>
             <AlertTriangle className="h-4 w-4 text-orange-500" />
           </CardHeader>
           <CardContent>
@@ -51,7 +47,7 @@ const ProductStatic: React.FC<ProductStaticData> = ({
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng số Category</CardTitle>
+            <CardTitle className="text-sm font-medium">Sản phẩm sắp hết</CardTitle>
             <TrendingUp className="h-4 w-4 text-red-500" />
           </CardHeader>
           <CardContent>
@@ -62,5 +58,4 @@ const ProductStatic: React.FC<ProductStaticData> = ({
     </div>
   )
 }
-
-export default ProductStatic;
+export default WarehouseStatic;

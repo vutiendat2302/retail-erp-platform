@@ -7,7 +7,8 @@ import { ProductSearch } from '../components/inventory_components/products/Produ
 import { WarehouseChoose } from '../components/inventory_components/warehouses/WarehouseChoose';
 import { getWarehouses } from '../services/inventery-api/WarehouseService';
 import { WarehouseTableComponent } from '../components/inventory_components/warehouses/WarehouseTable';
-import { getInventoryByNameWarehouse } from '../services/inventery-api/WarehouseService';
+import { getInventoryByNameWarehouse, getTotalPriceNormalByWarehouse } from '../services/inventery-api/WarehouseService';
+import WarehouseStatic from '../components/inventory_components/warehouses/WarehouseStatic';
 interface Warehouse {
   id: string;
   name: string;
@@ -27,6 +28,9 @@ interface Inventory {
   minimumQuantity: number;
   maximumQuantity: number;
   productBatchName: string;
+  expiryDate: string;
+  importDate: string;
+  priceNormal: number;
 }
 
 const Warehouse: React.FC = () => {
@@ -34,6 +38,8 @@ const Warehouse: React.FC = () => {
   const [openFindWarehouse, setOpenWarehouse] = useState(false);
   const [selectWarehouse, setSelectWarehouse] = useState<string | null>('');
   const [inventories, setInventories] = useState<Inventory[]>([]);
+  const [totalInventory, setTotalInventory] = useState<number>(0);
+  const [totalPriceNormal, setTotalPriceNormal] = useState<number>(0);
 
   useEffect(() => {
     const fetchWarehouses = async () => {
@@ -41,7 +47,6 @@ const Warehouse: React.FC = () => {
         const response = await getWarehouses();
         const warehouseData: Warehouse[] = response.data;
         setDataWarehouse(warehouseData);
-
         if (warehouseData.length > 0) {
           setSelectWarehouse(warehouseData[0].id);
         }
@@ -59,6 +64,9 @@ const Warehouse: React.FC = () => {
         try {
           const response = await getInventoryByNameWarehouse(selectWarehouse);
           setInventories(response.data);
+          setTotalInventory(response.data.length);
+          const total = await getTotalPriceNormalByWarehouse(selectWarehouse);
+          setTotalPriceNormal(total.data);
         } catch (error) {
           console.error("Failed to fetch inventory data: ", error);
         }
@@ -91,7 +99,10 @@ const Warehouse: React.FC = () => {
         </div>
 
         <div>
-          <ProductStatic/>
+          <WarehouseStatic
+            totalElements={totalInventory}
+            totalPriceNormal={totalPriceNormal}
+          />
         </div>
 
         <div>

@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../ui/card';
 import { Table, TableBody, TableCell, TableHead, TableRow, TableHeader } from '../../ui/table';
 import { ScrollArea } from '../../ui/scroll-area';
+import { formatCurrency, formatDate } from '../Convert';
 interface Inventory {
   id: string;
   productName: string;
@@ -11,11 +12,15 @@ interface Inventory {
   minimumQuantity: number;
   maximumQuantity: number;
   productBatchName: string;
+  expiryDate: string;
+  importDate: string;
+  priceNormal: number;
 }
 
 interface InventoryTable {
   data: Inventory[];
 }
+
 
 export function WarehouseTableComponent({data} : InventoryTable) {
 
@@ -35,8 +40,10 @@ export function WarehouseTableComponent({data} : InventoryTable) {
                 <TableRow>
                   <TableHead>ProductBatchName</TableHead>
                   <TableHead>ProductName</TableHead>
-                  <TableHead>WarehouseName</TableHead>
+                  <TableHead>PriceNormal</TableHead>
                   <TableHead>QuantityAvailable</TableHead>
+                  <TableHead>ImportDate</TableHead>
+                  <TableHead>ExpiryDate</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -44,8 +51,10 @@ export function WarehouseTableComponent({data} : InventoryTable) {
                   <TableRow key={warehouse.id}>
                     <TableCell>{warehouse.productBatchName}</TableCell>
                     <TableCell>{warehouse.productName}</TableCell>
-                    <TableCell>{warehouse.warehouseName}</TableCell>
+                    <TableCell>{formatCurrency(warehouse.priceNormal)}</TableCell>
                     <TableCell>{warehouse.quantityAvailable}</TableCell>
+                    <TableCell>{formatDate(warehouse.importDate)}</TableCell>
+                    <TableCell>{formatDate(warehouse.expiryDate)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

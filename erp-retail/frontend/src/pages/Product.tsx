@@ -1,6 +1,4 @@
-
 import React, {useState, useEffect} from 'react';
-import ProductTableComponent from '../components/inventory_components/products/ProductTableComponent';
 import ProductForm from '../components/inventory_components/products/ProductForm';
 
 import {
@@ -8,56 +6,94 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
-  getProducts,
+  getCountProductActive,
 } from '../services/inventery-api/ProductService';
-import { DialogContent, DialogDescription, DialogTitle, DialogTrigger,  Dialog, DialogHeader  } from '../components/ui/dialog';
+import { DialogContent, DialogDescription, DialogTitle, DialogTrigger, Dialog, DialogHeader } from '../components/ui/dialog';
 import { Button } from '../components/ui/button';
 import { Plus, Search, Package, AlertTriangle, TrendingUp, DollarSign } from 'lucide-react';
 import ProductStatic from '../components/inventory_components/products/ProductStatic';
 import { ProductSearch } from '../components/inventory_components/products/ProductSearch';
+import { ProductTableComponent } from '../components/inventory_components/products/ProductTableComponent';
 
 interface Product {
   id: string;
   name: string;
   description: string;
   priceNormal: number;
-  status: boolean;
+  status: string;
   brandName: string;
   categoryName: string;
   manufacturingLocationName: string;
+  sku: string;
+  tag: string;
+  priceSell: number;
+  promotionPrice: number;
+  metaKeyword: string;
+  seoTitle: string;
+  updateBy: string;
+  updateAt: string;
+  createBy: string;
+  createAt: string;
+  brandId: string;
+  categoryId: string;
+  manufacturingLocationId: string;
+  weight: number;
+  vat: number;
 }
 
+interface ProductFormData {
+  id: string;
+  name: string;
+  description: string;
+  priceNormal: number;
+  status: string;
+  brandName: string;
+  categoryName: string;
+  manufacturingLocationName: string;
+  sku: string;
+  tag: string;
+  priceSell: number;
+  promotionPrice: number;
+  metaKeyword: string;
+  seoTitle: string;
+  updateBy: string;
+  brandId: string;
+  categoryId: string;
+  manufacturingLocationId: string;
+}
 
 const Product: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState<number>(0);
-  const [size, setSize] = useState<number>(0);
-  const [totalPgaes, setTotalPages] = useState<number>(0);
+  const [size, setSize] = useState<number>(20);
+  const [totalPages, setTotalPages] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [formOpen, setFormOpen] = useState<boolean>(false);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [totalElements, setTotalElements] = useState<number>(0);
+  const [countProductActive, setCountProductActive] = useState<number>(0);
   
-  useEffect(() => {
-      loadProducts(page);
-  }, [page]);
-  
-
   const loadProducts = async (pageNum: number) => {
     setLoading(true);
     try {
       const res = await getPageProducts({page: pageNum, size, sort: 'name,asc'});
       setProducts(res.data.content);
       setTotalPages(res.data.totalPages);
+      setTotalElements(res.data.totalElements);
+      const count = await getCountProductActive();
+      setCountProductActive(count.data);
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
   };
+  
+  useEffect(() => {
+    if (size > 0) {
+      loadProducts(page);
+    }
+  }, [page, size]);
   
   const handleDelete = async (id: string) => {
     if (!window.confirm('Xác nhận xóa product này?')) return;
@@ -84,42 +120,42 @@ const Product: React.FC = () => {
     setFormOpen(false);
   };
 
-  const handleFormSubmit = async (data: Product) => {
+  const handleFormSubmit = async (data: ProductFormData) => {
     if (currentProduct) {
+      console.log('Cập nhật sản phẩm', data);
       await updateProduct(currentProduct.id, data);
+      console.log('Update thành công');
+      // Gọi loadProducts trực tiếp để làm mới dữ liệu
+      loadProducts(page);
     } else {
+      console.log('Tạo sản phẩm mới', data);
       await createProduct(data);
+      console.log('Create thành công');
+      // Gọi loadProducts trực tiếp để làm mới dữ liệu trên trang hiện tại
+      loadProducts(page);
     }
 
     setFormOpen(false);
-    loadProducts(page);
   };
 
   const goToPage = (newPage: number) => {
-    if (newPage >= 0 && newPage < totalPgaes) {
+    if (newPage >= 0 && newPage < totalPages) {
       setPage(newPage);
     }
   }
-
-  const handleChangeSize = (newSize: number) => {
-    setSize(newSize > 0 ? newSize : 5);
-    console.log("newSize:", newSize);
-  }
-
-  
 
   return (
     <div className='px-6'>
       <div className='md:px-10 -mt-10 '>
         <div className='flex items-center justify-between -mt-10'>
           <div className='mb-2'>
-            <h3>Quản lý kho hàng</h3>
+            <h3>Quản lý sản phẩm</h3>
             <p className="text-muted-foreground">
-              Theo dõi và quản lý tồn kho của bạn
+              Theo dõi và quản lý sản phẩm của bạn
             </p>
           </div>
         
-          <div  className='mb-2'>
+          <div className='mb-2'>
             <Dialog open={formOpen} onOpenChange={setFormOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" onClick={() => {
@@ -143,8 +179,8 @@ const Product: React.FC = () => {
                 </DialogHeader>
                 <ProductForm
                   initialData={currentProduct}
-                  onSubmit = {handleFormSubmit}
-                  onClose = {handleFormClose}
+                  onSubmit={handleFormSubmit}
+                  onClose={handleFormClose}
                 />
               </DialogContent>
             </Dialog>
@@ -152,21 +188,22 @@ const Product: React.FC = () => {
         </div>
 
         <div>
-          <ProductStatic/>
+          <ProductStatic
+            totalElements={totalElements}
+            countProducActive = {countProductActive}
+          />
         </div>
 
-        
       </div>
-          <ProductSearch />
+        <ProductSearch />
 
-      <div className= "mt-6 mx-auto px-6 md:px-10">
+      <div className="mt-6 mx-auto px-6 md:px-10 ">
         <ProductTableComponent
-          data = {products}
-          loading = {loading}
-          onEdit = {handleUpdate}
-          onDelete = {handleDelete}
-          onAdd = {handleCreate}
-          onSetSize = {handleChangeSize}
+          data={products}
+          loading={loading}
+          onEdit={handleUpdate}
+          onDelete={handleDelete}
+          totalElements={totalElements}
         />
       </div>
 
@@ -180,19 +217,19 @@ const Product: React.FC = () => {
         </button>
 
         <span>
-          Trang <strong>{totalPgaes === 0 ? 0: page + 1}</strong> / <strong>{totalPgaes}</strong>
+          Trang <strong>{totalPages === 0 ? 0 : page + 1}</strong> / <strong>{totalPages}</strong>
         </span>
 
         <button
           onClick={() => goToPage(page + 1)}
-          disabled={page + 1 === totalPgaes}
+          disabled={page + 1 >= totalPages}
           className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
         >
           Next
         </button>
       </div>
     </div>
-    );
-  };
-export default Product;
+  );
+};
 
+export default Product;
