@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-
+import React, { useState, useContext } from 'react';
 import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { fadeIn } from '../../utils/motion';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
+import { AuthContext } from './MainLayout';
 
 import {
   DropdownMenu,
@@ -22,13 +22,12 @@ import {
   Menu,
   X
 } from 'lucide-react';
-
+import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
 
 interface NavLink {
   href: string;
   label: string;
 }
-
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
@@ -83,6 +82,15 @@ export const Navbar: React.FC = () => {
   const [openDropdownProduct, setOpenDropdownProduct] = useState(false);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // login, logout
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    console.error("Author Null");
+    return null;
+  }
+  const { userData, onLogout } = authContext;
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-screen-2xl items-center justify-between">
@@ -279,7 +287,7 @@ export const Navbar: React.FC = () => {
         {/* Right side - Notifications and User Menu */}
         <div className="flex items-center space-x-4">
           {/* Notifications */}
-          <button className="relative p-2 rounded-full transition-colors hover:bg-foreground/10">
+          <button className="relative p-2 !rounded-full transition-colors hover:bg-foreground/10">
             <Bell className="h-5 w-6" />
             <Badge
               variant="destructive"
@@ -289,11 +297,34 @@ export const Navbar: React.FC = () => {
             </Badge>
           </button>
           {/* User Menu */}
-              <button className="relative p-2 rounded-full transition-colors hover:bg-foreground/10">
-                <User className="h-8 w-6" />
-              </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-6 w-6 rounded-full">
+                    <User className="!h-6 !w-6" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className='font-normal'>
+                    <div className='flex flex-col space-y-1'>
+                      <p className='text-sm front-medium leading-none'>
+                        {userData?.username || 'Unknow User'}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {userData?.role || 'No Role'}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator/>
+                  <DropdownMenuItem>
+                    <Button onClick={onLogout} className='bg-gray-600 w-full !rounded-md'>
+                      <LogOut/>
+                      <span>Đăng xuất</span>
+                    </Button>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
           {/* Settings */}
-          <button className="relative p-2 rounded-full transition-colors hover:bg-foreground/10">
+          <button className="relative p-2 !rounded-full transition-colors hover:bg-foreground/10">
             <Settings className="h-6 w-6" />
           </button>
 
