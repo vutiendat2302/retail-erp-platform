@@ -1,0 +1,26 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/erp_auth
+    username: tdattm
+    password: tiendat2004
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+security:
+  jwt:
+    issuer: "erp-auth"
+    access-token-ttl-min: 15
+    refresh-token-ttl-days: 7
+    secret: ${JWT_SECRET:dev-super-secret-change-me}
+
+app:
+  cors:
+    allowed-origins: "http://localhost:5173"
