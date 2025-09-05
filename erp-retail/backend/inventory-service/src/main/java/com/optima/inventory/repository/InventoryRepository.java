@@ -9,6 +9,8 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -19,13 +21,14 @@ public interface InventoryRepository extends JpaRepository<InventoryEntity, Long
         int getQuantityAvailable();
         int getMinimumQuantity();
         int getMaximumQuantity();
-        boolean getStatus();
+        String getStatus();
         String getProductBatchName();
         String getProductName();
         String getWarehouseName();
-
+        int getPriceNormal();
+        LocalDateTime getImportDate();
+        LocalDateTime getExpiryDate();
     }
-
 
     @Query("""
     select
@@ -36,7 +39,10 @@ public interface InventoryRepository extends JpaRepository<InventoryEntity, Long
         a.maximumQuantity as maximumQuantity,
         b.name as productBatchName,
         c.name as productName,
-        d.name as warehouseName
+        d.name as warehouseName,
+        b.expiryDate as expiryDate,
+        b.importDate as importDate,
+        c.priceNormal as priceNormal
     from InventoryEntity a
     inner join ProductBatchEntity b on a.productBatchId = b.id
     inner join ProductEntity c on a.productId = c.id
@@ -55,11 +61,25 @@ public interface InventoryRepository extends JpaRepository<InventoryEntity, Long
         a.maximumQuantity as maximumQuantity,
         b.name as productBatchName,
         c.name as productName,
-        d.name as warehouseName
+        d.name as warehouseName,
+        b.expiryDate as expiryDate,
+        b.importDate as importDate,
+        c.priceNormal as priceNormal
     from InventoryEntity a
     left join ProductBatchEntity b on a.productBatchId = b.id
     left join ProductEntity c on a.productId = c.id
     left join WarehouseEntity d on a.warehouseId = d.id
     """)
     Page<InventoryView> findAllInf(Pageable pageable);
+
+    @Query("""
+    select sum(c.priceNormal * a.quantityAvailable)
+    from InventoryEntity a
+    join ProductBatchEntity b on a.productBatchId = b.id
+    join ProductEntity c on a.productId = c.id
+    join WarehouseEntity d on d.id = a.warehouseId
+    where d.id = :warehouseId
+    """)
+    BigInteger getTotalPriceNormal(@Param("warehouseId")Long warehouseId);
+
 }

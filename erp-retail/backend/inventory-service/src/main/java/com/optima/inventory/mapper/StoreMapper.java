@@ -7,6 +7,7 @@ import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface StoreMapper {
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target="createAt", ignore = true)
     @Mapping(target = "updateAt", ignore = true)

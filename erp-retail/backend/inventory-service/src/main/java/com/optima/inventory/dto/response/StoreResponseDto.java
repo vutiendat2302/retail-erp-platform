@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 
 @Data
 public class StoreResponseDto {
-
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
     private String name;
@@ -28,7 +27,7 @@ public class StoreResponseDto {
 
     @JsonGetter("status")
     public String getStatusString() {
-        return this.status ? "Active" : "Inactive";
+        return this.status ? "active" : "inactive";
     }
 
     public void isStatus(String status) {

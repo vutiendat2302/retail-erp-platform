@@ -20,9 +20,7 @@ public class ProductRequestDto {
     private Long brandId;
     private Long categoryId;
     private Long manufacturingLocationId;
-
-    @Column(name = "qr_code")
-    private String qrCode;
+    private String sku;
 
     private String name;
 

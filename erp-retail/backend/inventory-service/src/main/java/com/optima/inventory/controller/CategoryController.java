@@ -1,6 +1,7 @@
 package com.optima.inventory.controller;
 
 import com.optima.inventory.dto.request.CategoryRequestDto;
+import com.optima.inventory.dto.response.CategoryNameResponse;
 import com.optima.inventory.entity.CategoryEntity;
 import com.optima.inventory.repository.CategoryRepository;
 import com.optima.inventory.service.CategoryService;
@@ -34,14 +35,13 @@ public class CategoryController {
         return categoryService.getCategory(categoryId);
     }
 
-    @PutMapping("/{categoryId}")
-    public CategoryEntity updateCategory(@PathVariable("categoryId") long categoryId, @RequestBody CategoryRequestDto request) {
-        return categoryService.updateCategory(categoryId, request);
+    @GetMapping("/name")
+    public List<CategoryNameResponse> getCategoryName() {
+        return categoryService.getCategoryName();
     }
 
-    @DeleteMapping("/{categoryId}")
-    public String deleteCategory(@PathVariable("categoryId") long categoryId) {
-        categoryService.deleteCategory(categoryId);
-        return "Category has been deleted";
+    @GetMapping("/getCountCategoryActive")
+    public int getCountCategoryActive() {
+        return categoryService.getCountCategoryActive();
     }
 }

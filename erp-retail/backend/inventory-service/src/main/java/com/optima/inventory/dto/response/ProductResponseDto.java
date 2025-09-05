@@ -1,5 +1,7 @@
 package com.optima.inventory.dto.response;
+
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.Column;
@@ -13,51 +15,43 @@ public class ProductResponseDto {
 
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
-
-    @Column(name = "sku")
     private String sku;
-
-
     private String name;
-
-    @Column(name = "seo_title")
     private String seoTitle;
-
     private String description;
     private boolean status;
     private String tag;
-
-    @Column(name = "price_normal")
     private int priceNormal;
-
-    @Column(name = "price_sell")
     private int priceSell;
-
-    @Column(name = "promotion_price")
     private int promotionPrice;
-
     private BigDecimal vat;
     private BigDecimal weight;
     private String warranty;
-
-    @Column(name = "view_count")
     private int viewCount;
-
-    @Column(name = "meta_keyword")
     private String metaKeyword;
-
-    @Column(name = "create_by")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long createBy;
-
-    @Column(name = "update_by")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long updateBy;
-
     private String categoryName;
     private String brandName;
     private String manufacturingLocationName;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long categoryId;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long brandId;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long manufacturingLocationId;
+    private LocalDateTime createAt;
+    private LocalDateTime updateAt;
 
     @JsonGetter("status")
     public String getStatusString() {
-        return this.status ? "Active" : "Inactive";
+        return this.status ? "active" : "inactive";
+    }
+
+    @JsonSetter("status")
+    public void setStatusString(String status) {
+        this.status = "active".equalsIgnoreCase(status);
     }
 }

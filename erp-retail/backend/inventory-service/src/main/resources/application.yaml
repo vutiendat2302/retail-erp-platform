@@ -1,18 +1,14 @@
-
 server:
   port: 8080
   servlet:
     context-path: /
+
 spring:
-  application:
-    name: inventory-service
   datasource:
-    url: jdbc:mysql://inventory-db:3306/inventory_db
+    url: "jdbc:mysql://localhost:3306/optima-project-retail-manager"
     username: root
-    password: 12122005
+    password: 123456
   jpa:
     hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+      ddl-auto: none
+    show-sql: true

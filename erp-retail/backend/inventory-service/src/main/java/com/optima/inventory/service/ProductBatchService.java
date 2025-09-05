@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -51,5 +52,11 @@ public class ProductBatchService {
 
     public void deleteProductBatch(long productBatchId) {
         productBatchRepository.deleteById(productBatchId);
+    }
+
+    public int getExpiringProductCount() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime oneMonthLater = now.plusMonths(1);
+        return productBatchRepository.countExpiringBatches(now, oneMonthLater);
     }
 }

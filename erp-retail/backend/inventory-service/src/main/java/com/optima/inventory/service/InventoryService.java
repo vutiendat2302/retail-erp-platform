@@ -5,6 +5,7 @@ import com.optima.inventory.dto.response.InventoryResponseDto;
 import com.optima.inventory.entity.InventoryEntity;
 import com.optima.inventory.mapper.InventoryMapper;
 import com.optima.inventory.repository.InventoryRepository;
+import com.optima.inventory.repository.ProductRepository;
 import com.optima.inventory.utils.SnowflakeIdGenerator;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,8 @@ public class InventoryService {
     private InventoryRepository inventoryRepository;
     @Autowired
     private InventoryMapper inventoryMapper;
+    @Autowired
+    private ProductRepository productRepository;
 
     @Transactional
     public InventoryResponseDto createInventory(InventoryResponseDto inventoryResponseDto) {
@@ -49,6 +53,10 @@ public class InventoryService {
 
     public Page<InventoryResponseDto> getAllPage(Pageable pageable) {
         return inventoryRepository.findAllInf(pageable).map(inventoryMapper::fromInventory);
+    }
+
+    public BigInteger getTotalPriceNormal(Long warehouseId) {
+        return inventoryRepository.getTotalPriceNormal(warehouseId);
     }
 
 }

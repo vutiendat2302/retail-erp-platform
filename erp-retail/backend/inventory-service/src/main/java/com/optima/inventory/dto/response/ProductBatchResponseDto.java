@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 
 @Data
 public class ProductBatchResponseDto {
-
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
     private String description;
