@@ -12,11 +12,8 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
+
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "brandId", ignore = true)
-    @Mapping(target = "categoryId", ignore = true)
-    @Mapping(target = "manufacturingLocationId", ignore = true)
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     ProductEntity toProduct(ProductResponseDto productResponseDto);
 
     @Mapping(target = "createAt", ignore = true)
@@ -29,4 +26,5 @@ public interface ProductMapper {
 
     @Mapping(source = "id", target = "id")
     ProductResponseDto fromProjection(ProductRepository.ProductView view);
+
 }

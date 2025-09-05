@@ -1,4 +1,5 @@
 package com.optima.inventory.dto.response;
+
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -22,9 +23,12 @@ public class InventoryResponseDto {
     private String productBatchName;
     private String productName;
     private String warehouseName;
+    private LocalDateTime expiryDate;
+    private LocalDateTime importDate;
+    private int priceNormal;
 
     @JsonGetter("status")
     public String getStatusString() {
-        return this.status ? "Active" : "Inactive";
+        return this.status ? "active" : "inactive";
     }
 }

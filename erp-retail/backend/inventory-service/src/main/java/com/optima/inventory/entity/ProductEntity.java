@@ -16,8 +16,8 @@ public class ProductEntity {
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
-    @Column(name = "qr_code")
-    private String qrCode;
+    @Column(name = "sku")
+    private String sku;
 
     private String name;
 

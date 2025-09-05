@@ -2,8 +2,10 @@ package com.optima.inventory.mapper;
 
 import com.optima.inventory.dto.request.ManufacturingLocationRequestDto;
 import com.optima.inventory.dto.response.BrandResponseDto;
+import com.optima.inventory.dto.response.ManufacturingLocationNameResponse;
 import com.optima.inventory.dto.response.ManufacturingLocationResponseDto;
 import com.optima.inventory.entity.ManufacturingLocationEntity;
+import com.optima.inventory.repository.ManufacturingLocationRepository;
 import org.mapstruct.*;
 import org.springframework.stereotype.Component;
 
@@ -17,4 +19,6 @@ public interface ManufacturingLocationMapper {
     void updateManufacturingLocation(@MappingTarget ManufacturingLocationEntity manufacturingLocationEntity, ManufacturingLocationRequestDto request);
 
     ManufacturingLocationResponseDto toManufacturingLocationResponseDto(ManufacturingLocationEntity manufacturingLocationEntity);
+
+    ManufacturingLocationNameResponse toManufacturingName(ManufacturingLocationRepository.ManufacturingLocationView view);
 }

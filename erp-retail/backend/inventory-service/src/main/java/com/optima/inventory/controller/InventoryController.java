@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigInteger;
 import java.util.List;
 @CrossOrigin("http://localhost:5173")
 @RestController
@@ -39,5 +40,10 @@ public class InventoryController {
     @GetMapping("/{warehouseId}")
     public List<InventoryResponseDto> getInventoryByWarehouse(@PathVariable Long warehouseId) {
         return inventoryService.findInventoryByWarehouse(warehouseId);
+    }
+
+    @GetMapping("/totalPrice/{warehouseId}")
+    public BigInteger getTotalPriceNormal(@PathVariable Long warehouseId) {
+        return inventoryService.getTotalPriceNormal(warehouseId);
     }
 }

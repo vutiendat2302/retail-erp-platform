@@ -33,6 +33,6 @@ public class BrandEntity {
     @Column(name = "update_by")
     private long updateBy;
 
-    private Boolean status;
+    private boolean status;
 }
 

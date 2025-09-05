@@ -17,13 +17,12 @@ public class CategoryEntity {
     @Id
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
-
     private String name;
 
     @Column(name = "seo_title")
     private String seoTitle;
     private String description;
-    private Boolean status;
+    private boolean status;
 
     @Column(name = "parent_id", nullable = true)
     private Long parentId;

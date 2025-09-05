@@ -1,6 +1,7 @@
 package com.optima.inventory.service;
 
 import com.optima.inventory.dto.request.CategoryRequestDto;
+import com.optima.inventory.dto.response.CategoryNameResponse;
 import com.optima.inventory.entity.CategoryEntity;
 import com.optima.inventory.mapper.CategoryMapper;
 import com.optima.inventory.repository.CategoryRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
@@ -51,5 +53,15 @@ public class CategoryService {
     @Transactional
     public void deleteCategory(long categoryId) {
         categoryRepository.deleteById(categoryId);
+    }
+
+    public List<CategoryNameResponse> getCategoryName() {
+        return categoryRepository.getCategoryName().stream()
+                .map(categoryMapper::toCategoryName)
+                .collect(Collectors.toList());
+    }
+
+    public int getCountCategoryActive() {
+        return categoryRepository.getCountCategoryActive();
     }
 }

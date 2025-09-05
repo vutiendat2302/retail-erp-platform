@@ -16,11 +16,11 @@ import java.time.LocalDateTime;
 public class ManufacturingLocationEntity {
     @Id
     @JsonSerialize(using = ToStringSerializer.class)
-    private long id;
+    private Long id;
     private String name;
     private String email;
     private String phone;
-    private Boolean status;
+    private boolean status;
     private String description;
     @Column(name = "create_by")
     private long createBy;

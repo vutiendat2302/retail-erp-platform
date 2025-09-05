@@ -1,6 +1,7 @@
 package com.optima.inventory.service;
 
 import com.optima.inventory.dto.request.ManufacturingLocationRequestDto;
+import com.optima.inventory.dto.response.ManufacturingLocationNameResponse;
 import com.optima.inventory.entity.ManufacturingLocationEntity;
 import com.optima.inventory.mapper.ManufacturingLocationMapper;
 import com.optima.inventory.repository.ManufacturingLocationRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ManufacturingLocationService {
@@ -18,39 +20,9 @@ public class ManufacturingLocationService {
     @Autowired
     private ManufacturingLocationMapper manufacturingLocationMapper;
 
-    @Transactional
-    public ManufacturingLocationEntity createManufacturingLocation(ManufacturingLocationRequestDto request) {
-        ManufacturingLocationEntity manufacturingLocationEntity = manufacturingLocationMapper.toManufacturingLocation(request);
-
-        long newManufacturingLocationId = SnowflakeIdGenerator.nextId();
-        while (manufacturingLocationRepository.existsById(newManufacturingLocationId)) {
-            newManufacturingLocationId = SnowflakeIdGenerator.nextId();
-        }
-        manufacturingLocationEntity.setId(newManufacturingLocationId);
-
-        return manufacturingLocationRepository.save(manufacturingLocationEntity);
-    }
-
-    public List<ManufacturingLocationEntity> getManufacturingLocations() {
-        return manufacturingLocationRepository.findAll();
-    }
-
-    public ManufacturingLocationEntity getManufacturingLocation(long manufacturingLocationId) {
-        return manufacturingLocationRepository.findById(manufacturingLocationId)
-                .orElseThrow(() -> new RuntimeException("Manufacturing Location not found"));
-    }
-
-    @Transactional
-    public ManufacturingLocationEntity updateManufacturingLocation(long manufacturingLocationId, ManufacturingLocationRequestDto request) {
-        ManufacturingLocationEntity manufacturingLocationEntity = manufacturingLocationRepository.findById(manufacturingLocationId)
-                .orElseThrow(() -> new RuntimeException("Manufacturing Location not found"));
-        manufacturingLocationMapper.updateManufacturingLocation(manufacturingLocationEntity, request);
-
-        return manufacturingLocationRepository.save(manufacturingLocationEntity);
-    }
-
-    @Transactional
-    public void deletedManufacturingLocation(long manufacturingLocationId) {
-        manufacturingLocationRepository.deleteById(manufacturingLocationId);
+    public List<ManufacturingLocationNameResponse> getManufacturingName() {
+        return manufacturingLocationRepository.getManufacturingLocationName().stream()
+                .map(manufacturingLocationMapper::toManufacturingName)
+                .collect(Collectors.toList());
     }
 }

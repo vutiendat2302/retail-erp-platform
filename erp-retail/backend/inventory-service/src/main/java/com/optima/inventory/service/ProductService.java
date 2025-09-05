@@ -26,12 +26,6 @@ public class ProductService {
     private ProductRepository productRepository;
     @Autowired
     private ProductMapper productMapper;
-    @Autowired
-    private BrandRepository brandRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
-    private ManufacturingLocationRepository manufacturingLocationRepository;
 
     public ProductService(ProductRepository productRepository,
                           ProductMapper productMapper) {
@@ -84,7 +78,12 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public Page<ProductResponseDto> getAllPage(Pageable pageable) {
         return productRepository.findAllIn4(pageable).map(productMapper::fromProjection);
+    }
+
+    public int getProductActive() {
+        return productRepository.getCountProductActive();
     }
 }

@@ -43,4 +43,9 @@ public class ProductBatchController {
         productBatchService.deleteProductBatch(productBatchId);
         return "Product Batch has been deleted";
     }
+
+    @GetMapping("/{suggestProductExpiryDate}")
+    public int getExpiringProductCount() {
+        return productBatchService.getExpiringProductCount();
+    }
 }

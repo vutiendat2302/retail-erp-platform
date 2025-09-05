@@ -1,8 +1,10 @@
 package com.optima.inventory.mapper;
 
 import com.optima.inventory.dto.request.BrandRequesDto;
+import com.optima.inventory.dto.response.BrandNameResponse;
 import com.optima.inventory.dto.response.BrandResponseDto;
 import com.optima.inventory.entity.BrandEntity;
+import com.optima.inventory.repository.BrandRepository;
 import org.mapstruct.*;
 import org.springframework.stereotype.Component;
 
@@ -17,5 +19,7 @@ public interface BrandMapper {
     @Mapping(target = "id", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateBrand(@MappingTarget BrandEntity brandEntity, BrandRequesDto request);
+
+    BrandNameResponse toBrandName(BrandRepository.BrandView view);
 }
 
