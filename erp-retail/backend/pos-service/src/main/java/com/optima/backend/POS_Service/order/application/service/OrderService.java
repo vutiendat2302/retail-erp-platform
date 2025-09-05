@@ -14,6 +14,11 @@ import com.optima.backend.POS_Service.order.infrastructure.entity.OrderStatusEnt
 import com.optima.backend.POS_Service.order.infrastructure.repository.OrderDetailRepository;
 import com.optima.backend.POS_Service.order.infrastructure.repository.OrderRepository;
 import com.optima.backend.POS_Service.order.infrastructure.repository.OrderStatusRepository;
+import com.optima.backend.POS_Service.promotion.application.dto.response.PromotionResponse;
+import com.optima.backend.POS_Service.promotion.application.mapper.PromotionMapper;
+import com.optima.backend.POS_Service.promotion.application.service.PromotionService;
+import com.optima.backend.POS_Service.promotion.infrastructure.entity.PromotionEntity;
+import com.optima.backend.POS_Service.promotion.infrastructure.repository.PromotionRepository;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
@@ -22,7 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Getter
@@ -37,6 +44,9 @@ public class OrderService {
     OrderMapper orderMapper;
     OrderDetailMapper orderDetailMapper;
     OrderDetailRepository orderDetailRepository;
+    PromotionService promotionService;
+    PromotionRepository promotionRepository;
+    PromotionMapper promotionMapper;
     @Transactional
     public OrderResponse addToCart(OrderRequest orderRequest,Long customerId) {
         if(orderRequest.getOrderDetails() == null) {
@@ -246,8 +256,44 @@ public class OrderService {
                 orderEntity.addOrderDetail(detail);
             }
         }
-
+        if (orderEntity.getPromotion() != null) {
+            promotionService.addOneCurrentUserPromotion(orderEntity.getPromotion());
+        }
         orderEntity = orderRepository.save(orderEntity);
         return orderMapper.toResponse(orderEntity);
+    }
+    @Transactional
+    public OrderResponse applyPromotion(Long orderId,String codePromotion){
+        OrderEntity orderEntity = orderRepository.findByIdAndOrderStatus_codeStatus(orderId,"PENDING").
+                orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng của bạn"));
+        PromotionEntity promotion = promotionRepository.findByCodePromotion(codePromotion).
+                orElseThrow(() -> new RuntimeException("Không tìm thấy mã khuyến mãi của bạn"));
+        orderEntity.setPromotion(promotion);
+        orderEntity.setPromotionDiscount(promotionService.applyPromotion(codePromotion,orderEntity.getFinalAmountAfterTax()));
+        OrderEntity saved = orderRepository.save(orderEntity);
+        return orderMapper.toResponse(saved);
+    }
+    @Transactional(readOnly = true)
+    public OrderResponse getOrderById(Long orderId) {
+        OrderEntity orderEntity = orderRepository.findById(orderId).
+                orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng của bạn"));
+        return orderMapper.toResponse(orderEntity);
+    }
+    @Transactional(readOnly = true)
+    public List<OrderResponse> getOrders(){
+        List<OrderEntity> orderEntities = orderRepository.findAll();
+        return orderEntities.stream().map(orderEntity -> orderMapper.toResponse(orderEntity)).collect(Collectors.toList());
+    }
+    @Transactional
+    public List<PromotionResponse> getPromotionsUsedByOrder(Long orderId) {
+        List<PromotionEntity> promotionEntities = promotionRepository.findByIsActiveTrue();
+        List<PromotionEntity> promotionUsed = new ArrayList<>();
+        OrderEntity orderEntity = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Bạn chưa thêm sản phẩm vào giỏ hàng"));
+        for (PromotionEntity promotionEntity : promotionEntities) {
+            if (promotionEntity.getMinOrderAmount().compareTo(orderEntity.getFinalAmountAfterTax()) <= 0){
+                promotionUsed.add(promotionEntity);
+            }
+        }
+        return promotionUsed.stream().map(promotionMapper::toResponse).collect(Collectors.toList());
     }
 }

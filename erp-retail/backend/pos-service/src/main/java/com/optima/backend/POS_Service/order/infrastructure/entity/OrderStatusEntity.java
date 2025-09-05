@@ -21,7 +21,7 @@ import java.util.List;
 public class OrderStatusEntity {
     @Id
     @GeneratedValue(generator = "snowflakeGenerator")
-    @GenericGenerator(name = "snowflakeGenerator", strategy = "com.optima.backend.POS_Service.order.application.utils.SnowflakeIdGenerator")
+    @GenericGenerator(name = "snowflakeGenerator", strategy = "com.optima.backend.POS_Service.utils.SnowflakeIdGenerator")
     @Column(name = "id")
     Long Id;
     @Column(name = "code_status")

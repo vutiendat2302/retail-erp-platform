@@ -1,5 +1,6 @@
 package com.optima.backend.POS_Service.order.infrastructure.entity;
 
+import com.optima.backend.POS_Service.promotion.infrastructure.entity.PromotionEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -23,7 +24,7 @@ import java.util.List;
 public class OrderEntity {
     @Id
     @GeneratedValue(generator = "snowflakeGenerator")
-    @GenericGenerator(name = "snowflakeGenerator", strategy = "com.optima.backend.POS_Service.order.application.utils.SnowflakeIdGenerator")
+    @GenericGenerator(name = "snowflakeGenerator", strategy = "com.optima.backend.POS_Service.utils.SnowflakeIdGenerator")
     @Column(name = "id")
     Long Id;
     @Column (name = "customer_id")
@@ -47,6 +48,9 @@ public class OrderEntity {
     String customerName;
     @Column (name = "promotion_discount")
     BigDecimal promotionDiscount;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "promotion_id")
+    PromotionEntity promotion;
     @OneToMany(mappedBy = "orderEntity",cascade = CascadeType.ALL,orphanRemoval = true)
     List<OrderDetailEntity> orderDetails = new ArrayList<>();
     public void addOrderDetail(OrderDetailEntity detail) {
@@ -77,5 +81,12 @@ public class OrderEntity {
            finalAmount = finalAmount.add(detail.getTotalAmount());
        }
        return finalAmount.add(getTaxAmount());
+    }
+    public BigDecimal getFinalAmountAfterTaxAndPromotion(){
+        BigDecimal finalAmount = BigDecimal.ZERO;
+        for (OrderDetailEntity detail : orderDetails) {
+            finalAmount = finalAmount.add(detail.getTotalAmount());
+        }
+        return finalAmount.add(getTaxAmount()).subtract(getPromotionDiscount());
     }
 }

@@ -1,4 +1,4 @@
-package com.optima.backend.POS_Service.order.application.utils;
+package com.optima.backend.POS_Service.utils;
 
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;

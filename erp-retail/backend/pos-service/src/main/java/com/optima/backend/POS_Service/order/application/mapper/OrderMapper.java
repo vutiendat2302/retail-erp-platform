@@ -47,8 +47,10 @@ public class OrderMapper {
        orderResponse.setId(orderEntity.getId());
        orderResponse.setOrderDetails(orderDetailMapper.toResponseList(orderEntity.getOrderDetails()));
        orderResponse.setTaxAmount(orderEntity.getTaxAmount());
+       orderResponse.setPromotionDiscount(orderEntity.getPromotionDiscount());
        orderResponse.setFinalAmountAfterTax(orderEntity.getFinalAmountAfterTax());
        orderResponse.setFinalAmountBeforeTax(orderEntity.getFinalAmountBeforeTax());
+       orderResponse.setFinalAmountAfterTaxAndPromotion(orderEntity.getFinalAmountAfterTaxAndPromotion());
        return orderResponse;
    }
 }
