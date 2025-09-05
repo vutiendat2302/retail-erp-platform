@@ -9,6 +9,8 @@ import { Report } from './components/inventory_components/Report';
 import Warehouse from './pages/Warehouse';
 import Product from './pages/Product';
 import { LoginForm } from './pages/Login';
+import POSPage from './pages/PostOfSale';
+
 interface UserData {
   username: string;
   role: string;
@@ -49,6 +51,7 @@ const AppRouter = () => {
         <Route path='inventory' element={<Warehouse />} />
         <Route path='report' element={<Report />} />
         <Route path='product' element={<Product />} />
+        <Route path='post-of-link' element={<POSPage />} />
       </Route>
     </Routes>
   );

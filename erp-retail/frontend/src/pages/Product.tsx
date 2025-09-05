@@ -7,6 +7,8 @@ import {
   updateProduct,
   deleteProduct,
   getCountProductActive,
+  getCountBrandActive,
+  getCountCategoryActive,
 } from '../services/inventery-api/ProductService';
 import { DialogContent, DialogDescription, DialogTitle, DialogTrigger, Dialog, DialogHeader } from '../components/ui/dialog';
 import { Button } from '../components/ui/button';
@@ -72,6 +74,8 @@ const Product: React.FC = () => {
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [totalElements, setTotalElements] = useState<number>(0);
   const [countProductActive, setCountProductActive] = useState<number>(0);
+  const [countBrandActive, setCountBrandActive] = useState<number>(0);
+  const [countCategoryActive, setCountCategoryActive] = useState<number>(0);
   
   const loadProducts = async (pageNum: number) => {
     setLoading(true);
@@ -80,8 +84,15 @@ const Product: React.FC = () => {
       setProducts(res.data.content);
       setTotalPages(res.data.totalPages);
       setTotalElements(res.data.totalElements);
-      const count = await getCountProductActive();
-      setCountProductActive(count.data);
+
+      const countProduct = await getCountProductActive();
+      setCountProductActive(countProduct.data);
+
+      const countBrand = await getCountBrandActive();
+      setCountBrandActive(countBrand.data);
+
+      const countCategory = await getCountCategoryActive();
+      setCountCategoryActive(countCategory.data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -191,6 +202,8 @@ const Product: React.FC = () => {
           <ProductStatic
             totalElements={totalElements}
             countProducActive = {countProductActive}
+            countCategoryActive = {countCategoryActive}
+            countBrandActive = {countBrandActive}
           />
         </div>
 

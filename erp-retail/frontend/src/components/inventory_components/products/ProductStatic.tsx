@@ -10,11 +10,15 @@ import { Plus, Search, Package, AlertTriangle, TrendingUp, DollarSign } from 'lu
 interface ProductStaticData {
   totalElements: number;
   countProducActive: number;
+  countCategoryActive: number;
+  countBrandActive: number;
 }
 
 const ProductStatic: React.FC<ProductStaticData> = ({
   totalElements,
   countProducActive,
+  countCategoryActive,
+  countBrandActive,
 }) =>  {
   return (
     <div className="p-6 w-[98%] mx-auto">
@@ -41,21 +45,21 @@ const ProductStatic: React.FC<ProductStaticData> = ({
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng số Brand</CardTitle>
+            <CardTitle className="text-sm font-medium">Tổng số Brand Active</CardTitle>
             <AlertTriangle className="h-4 w-4 text-orange-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-500">0</div>
+            <div className="text-2xl font-bold">{countBrandActive}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng số Category</CardTitle>
+            <CardTitle className="text-sm font-medium">Tổng số Category Active</CardTitle>
             <TrendingUp className="h-4 w-4 text-red-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-500">0</div>
+            <div className="text-2xl font-bold">{countCategoryActive}</div>
           </CardContent>
         </Card>
       </div>

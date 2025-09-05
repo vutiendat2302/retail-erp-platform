@@ -36,3 +36,6 @@ export const getPageProducts = ({
 export const getCategoryName = () => api.get(`/api/category/name`);
 export const getManufacturingName = () => api.get(`/api/manufacturingLocation/name`);
 export const getBrandName = () => api.get(`/api/brand/name`);
+
+export const getCountBrandActive = () => api.get(`/api/brand/getCountBrandActive`);
+export const getCountCategoryActive = () => api.get(`/api/category/getCountCategoryActive`);

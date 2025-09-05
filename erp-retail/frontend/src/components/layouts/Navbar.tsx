@@ -34,21 +34,21 @@ export const Navbar: React.FC = () => {
   const navigate = useNavigate();
 
   const posLink: NavLink[] = [
-    {href: '/post-of-link', label: "Post Of Sale"}
+    {href: '/post-of-link', label: "Quản lý bán hàng"}
   ];
 
   const reportLink: NavLink[] = [
-    {href: '/report', label: 'Report'}
+    {href: '/report', label: 'Báo cáo'}
   ];
 
   const dashboardLink: NavLink[] = [
-    {href: '/', label: 'Dashboard'},
+    {href: '/', label: 'Trang chủ'},
   ];
 
   const dropdownHRMLinks: NavLink[] = [
-    { href: '/employee', label: 'Employee' },
-    { href: '/schedule', label: 'Schedule' },
-    { href: '/attendance', label: 'Attendance' },
+    { href: '/employee', label: 'Nhân viên' },
+    { href: '/schedule', label: 'Lịch làm việc' },
+    { href: '/attendance', label: 'Điểm danh' },
   ];
 
   const dropdownInventoryLinks: NavLink[] = [
@@ -135,7 +135,7 @@ export const Navbar: React.FC = () => {
                       isDropdownHRMActive ? 'text-foreground border-b-2 border-primary pb-1' : 'text-foreground/60'
                     }`}
                   >
-                    Human Resources
+                    Quản lý nhân viên
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="center" sideOffset={18} forceMount>
@@ -177,7 +177,7 @@ export const Navbar: React.FC = () => {
                       isDropdownIventoryActive ? 'text-foreground border-b-2 border-primary pb-1' : 'text-foreground/60'
                     }`}
                   >
-                    Warehouse
+                    Quản lý kho
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className='w-56' align="center" sideOffset={18} forceMount>
@@ -217,7 +217,7 @@ export const Navbar: React.FC = () => {
                       isDropdownProductActive ? 'text-foreground border-b-2 border-primary pb-1' : 'text-foreground/60'
                     }`}
                   >
-                    Product
+                    Quản lý sản phẩm
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className='w-56' align="center" sideOffset={18} forceMount>
