@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class OrderDetailEntity {
     @Id
     @GeneratedValue(generator = "snowflakeGenerator")
-    @GenericGenerator(name = "snowflakeGenerator", strategy = "com.optima.backend.POS_Service.order.application.utils.SnowflakeIdGenerator")
+    @GenericGenerator(name = "snowflakeGenerator", strategy = "com.optima.backend.POS_Service.utils.SnowflakeIdGenerator")
     @Column(name = "id")
     Long Id;
     @ManyToOne (fetch = FetchType.LAZY)

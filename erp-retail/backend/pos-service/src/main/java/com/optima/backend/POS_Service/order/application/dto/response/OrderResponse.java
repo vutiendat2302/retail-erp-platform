@@ -16,6 +16,8 @@ public class OrderResponse {
     Long Id;
     List<OrderDetailResponse> orderDetails = new ArrayList<>();
     BigDecimal taxAmount;
+    BigDecimal promotionDiscount;
     BigDecimal finalAmountBeforeTax;
     BigDecimal finalAmountAfterTax;
+    BigDecimal finalAmountAfterTaxAndPromotion;
 }

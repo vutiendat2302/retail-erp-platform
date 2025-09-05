@@ -1,5 +1,6 @@
 package com.optima.backend.POS_Service.order.application.dto.request;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -13,6 +14,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderRequest {
     String note;
+    @Valid
     @NotNull(message = "Đơn hàng của bạn không được để trống")
     List<OrderDetailRequest> orderDetails;
 }
