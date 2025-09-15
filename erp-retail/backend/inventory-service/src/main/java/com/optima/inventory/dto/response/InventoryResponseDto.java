@@ -26,6 +26,7 @@ public class InventoryResponseDto {
     private LocalDateTime expiryDate;
     private LocalDateTime importDate;
     private int priceNormal;
+    private String manufacturingLocation;
 
     @JsonGetter("status")
     public String getStatusString() {

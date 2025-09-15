@@ -11,9 +11,11 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,4 +61,25 @@ public class InventoryService {
         return inventoryRepository.getTotalPriceNormal(warehouseId);
     }
 
+    public BigInteger getCountProductInWarehouse(Long warehouseId) {
+        return inventoryRepository.getCountProductInWarehouse(warehouseId);
+    }
+
+    public BigInteger getSumProductInWarehouse(Long warehouseId) {
+        return inventoryRepository.getSumQuantityProductInWarehouse(warehouseId);
+    }
+
+    public int getCountProductsNearExpiry(Long warehouseId) {
+        LocalDateTime afterTimeNow = LocalDateTime.now().plusDays(30);
+        return inventoryRepository.getCountProductsNearExpiry(warehouseId, afterTimeNow);
+    }
+
+    public int getCountProductsNearOut(Long warehouseId) {
+        return inventoryRepository.getCountProductsNearOut(warehouseId);
+    }
+
+    @Transactional
+    public Page<InventoryResponseDto> getSearchAllIn4(Long warehouseId, String productName, Long productBatch, Pageable pageable) {
+        return inventoryRepository.getSearchAllIn4(warehouseId, productName, productBatch, pageable).map(inventoryMapper::fromInventory);
+    }
 }

@@ -54,13 +54,13 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public ProductResponseDto getProduct(long productId) {
+    public ProductResponseDto getProduct(Long productId) {
         ProductEntity productEntity = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not find" + productId));
         return productMapper.toProductResponseDto(productEntity);
     }
 
-    public ProductResponseDto updateProduct(long productId, ProductResponseDto productResponseDto) {
+    public ProductResponseDto updateProduct(Long productId, ProductResponseDto productResponseDto) {
         ProductEntity productEntity = productMapper.toProduct(productResponseDto);
         productMapper.updateProduct(productEntity, productResponseDto);
         ProductEntity afterUpdateProduct = productRepository.save(productEntity);
@@ -68,7 +68,7 @@ public class ProductService {
     }
 
     @Transactional
-    public void deleteProduct(long productId) {
+    public void deleteProduct(Long productId) {
         productRepository.deleteById(productId);
     }
 
@@ -85,5 +85,10 @@ public class ProductService {
 
     public int getProductActive() {
         return productRepository.getCountProductActive();
+    }
+
+    @Transactional
+    public Page<ProductResponseDto> getSearchAllIn4(String search, Long category, Long brand, Boolean status, Pageable pageable) {
+        return productRepository.getSearchAllIn4(search, category, brand, status, pageable).map(productMapper::fromProjection);
     }
 }
