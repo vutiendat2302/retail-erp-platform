@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
-import { Textarea } from '../../ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Textarea } from '../ui/textarea';
 
 interface OrderNotesProps {
   orderNote: string;

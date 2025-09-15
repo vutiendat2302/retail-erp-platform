@@ -4,73 +4,7 @@ import { Label } from '../../ui/label';
 import { Textarea } from '../../../components/ui/textarea';
 import { Button } from '../../ui/button';
 import { getBrandName, getCategoryName, getManufacturingName } from '../../../services/inventery-api/ProductService';
-interface ProductFormData {
-  id: string;
-  name: string;
-  description: string;
-  priceNormal: number;
-  status: string;
-  brandName: string;
-  categoryName: string;
-  manufacturingLocationName: string;
-  sku: string;
-  tag: string;
-  priceSell: number;
-  promotionPrice: number;
-  metaKeyword: string;
-  seoTitle: string;
-  updateBy: string;
-  brandId: string;
-  categoryId: string;
-  manufacturingLocationId: string;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  priceNormal: number;
-  status: string;
-  brandName: string;
-  categoryName: string;
-  manufacturingLocationName: string;
-  sku: string;
-  tag: string;
-  priceSell: number;
-  promotionPrice: number;
-  metaKeyword: string;
-  seoTitle: string;
-  updateBy: string;
-  updateAt: string;
-  createBy: string;
-  createAt: string;
-  brandId: string;
-  categoryId: string;
-  manufacturingLocationId: string;
-  weight: number;
-  vat: number;
-}
-
-interface CategoryName {
-  id: string;
-  name: string;
-}
-
-interface BrandName {
-  id: string;
-  name: string;
-}
-
-interface ManufacturingLocationName {
-  id: string;
-  name: string;
-}
-
-interface ProductFormProps {
-  initialData?: Product | null;
-  onSubmit: (data: ProductFormData) => void | Promise<void>;
-  onClose: () => void;
-}
+import type { ProductFormData, Product, CategoryName, ManufacturingLocationName, BrandName, ProductFormProps } from '../../../types/InventoryServiceType';
 
 const ProductForm: React.FC<ProductFormProps> = ({
   initialData, onSubmit, onClose }) => {

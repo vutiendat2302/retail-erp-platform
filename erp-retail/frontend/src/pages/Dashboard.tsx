@@ -218,127 +218,127 @@ const Dashboard: React.FC = () => {
           ))}
         </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
-        {/* Hoat dong gan day */}
-        <Card className="col-span-4">
-          <CardHeader>
-            <CardTitle>Hoạt động gần đây</CardTitle>
-            <CardDescription>
-              Các thay đổi mới nhất trong kho hàng
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-center space-x-4">
-                  <div className="flex-shrink-0">
-                    {getActivityIcon(activity.type)}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
+          {/* Hoat dong gan day */}
+          <Card className="col-span-4">
+            <CardHeader>
+              <CardTitle>Hoạt động gần đây</CardTitle>
+              <CardDescription>
+                Các thay đổi mới nhất trong kho hàng
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {recentActivity.map((activity) => (
+                  <div key={activity.id} className="flex items-center space-x-4">
+                    <div className="flex-shrink-0">
+                      {getActivityIcon(activity.type)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground">
+                        {activity.action}: {activity.product}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {activity.quantity > 0 && `Số lượng: ${activity.quantity} • `}
+                        {activity.time}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground">
-                      {activity.action}: {activity.product}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {activity.quantity > 0 && `Số lượng: ${activity.quantity} • `}
-                      {activity.time}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* Canh bao hang ton kho */}
-        <Card className="col-span-3">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <AlertTriangle className="h-5 w-5 text-orange-600" />
-              <span>Cảnh báo kho</span>
-            </CardTitle>
-            <CardDescription>
-              Sản phẩm sắp hết hàng
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {lowStockProducts.map((product, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium">{product.name}</p>
-                    <Badge variant={product.current === 0 ? 'destructive' : 'secondary'}>
-                      {product.current}/{product.min}
-                    </Badge>
+          {/* Canh bao hang ton kho */}
+          <Card className="col-span-3">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <AlertTriangle className="h-5 w-5 text-orange-600" />
+                <span>Cảnh báo kho</span>
+              </CardTitle>
+              <CardDescription>
+                Sản phẩm sắp hết hàng
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {lowStockProducts.map((product, index) => (
+                  <div key={index} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium">{product.name}</p>
+                      <Badge variant={product.current === 0 ? 'destructive' : 'secondary'}>
+                        {product.current}/{product.min}
+                      </Badge>
+                    </div>
+                    <Progress
+                      value={product.percentage}
+                      className="h-2"
+                    />
                   </div>
-                  <Progress
-                    value={product.percentage}
-                    className="h-2"
-                  />
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
       </div>
 
-      {/* Quick Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Thao tác nhanh</CardTitle>
-          <CardDescription>
-            Các tác vụ thường dùng để quản lý kho hàng
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card className="p-4 hover:bg-accent transition-colors cursor-pointer">
-              <div className="flex items-center space-x-3">
-                <Package className="h-8 w-8 text-blue-600" />
-                <div>
-                  <p className="font-medium">Thêm sản phẩm</p>
-                  <p className="text-sm text-muted-foreground">Nhập sản phẩm mới</p>
+        {/* Quick Actions */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Thao tác nhanh</CardTitle>
+            <CardDescription>
+              Các tác vụ thường dùng để quản lý kho hàng
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <Card className="p-4 hover:bg-accent transition-colors cursor-pointer">
+                <div className="flex items-center space-x-3">
+                  <Package className="h-8 w-8 text-blue-600" />
+                  <div>
+                    <p className="font-medium">Thêm sản phẩm</p>
+                    <p className="text-sm text-muted-foreground">Nhập sản phẩm mới</p>
+                  </div>
                 </div>
-              </div>
-            </Card>
-            
-            <Card className="p-4 hover:bg-accent transition-colors cursor-pointer">
-              <div className="flex items-center space-x-3">
-                <TrendingUp className="h-8 w-8 text-green-600" />
-                <div>
-                  <p className="font-medium">Nhập kho</p>
-                  <p className="text-sm text-muted-foreground">Cập nhật số lượng</p>
+              </Card>
+              
+              <Card className="p-4 hover:bg-accent transition-colors cursor-pointer">
+                <div className="flex items-center space-x-3">
+                  <TrendingUp className="h-8 w-8 text-green-600" />
+                  <div>
+                    <p className="font-medium">Nhập kho</p>
+                    <p className="text-sm text-muted-foreground">Cập nhật số lượng</p>
+                  </div>
                 </div>
-              </div>
-            </Card>
-            
-            <Card className="p-4 hover:bg-accent transition-colors cursor-pointer">
-              <div className="flex items-center space-x-3">
-                <BarChart3 className="h-8 w-8 text-purple-600" />
-                <div>
-                  <p className="font-medium">Xem báo cáo</p>
-                  <p className="text-sm text-muted-foreground">Thống kê chi tiết</p>
+              </Card>
+              
+              <Card className="p-4 hover:bg-accent transition-colors cursor-pointer">
+                <div className="flex items-center space-x-3">
+                  <BarChart3 className="h-8 w-8 text-purple-600" />
+                  <div>
+                    <p className="font-medium">Xem báo cáo</p>
+                    <p className="text-sm text-muted-foreground">Thống kê chi tiết</p>
+                  </div>
                 </div>
-              </div>
-            </Card>
-            
-            <Card className="p-4 hover:bg-accent transition-colors cursor-pointer">
-              <div className="flex items-center space-x-3">
-                <Users className="h-8 w-8 text-orange-600" />
-                <div>
-                  <p className="font-medium">Quản lý người dùng</p>
-                  <p className="text-sm text-muted-foreground">Phân quyền access</p>
+              </Card>
+              
+              <Card className="p-4 hover:bg-accent transition-colors cursor-pointer">
+                <div className="flex items-center space-x-3">
+                  <Users className="h-8 w-8 text-orange-600" />
+                  <div>
+                    <p className="font-medium">Quản lý người dùng</p>
+                    <p className="text-sm text-muted-foreground">Phân quyền access</p>
+                  </div>
                 </div>
-              </div>
-            </Card>
-          </div>
-        </CardContent>
-      </Card>
+              </Card>
+            </div>
+          </CardContent>
+        </Card>
     </div>
 
     {/* Tiêu đề */}
       <div className='mt-8'>
         <h1>
-          HRMs – Enterprise Resource Planning (ERP).
+          Quản Lý Nhân Sự
         </h1>
       </div>
 

@@ -2,67 +2,23 @@ import React, {useState, useEffect} from 'react';
 import ProductForm from '../components/inventory_components/products/ProductForm';
 
 import {
-  getPageProducts,
   createProduct,
   updateProduct,
   deleteProduct,
   getCountProductActive,
   getCountBrandActive,
   getCountCategoryActive,
+  getCategoryName,
+  getBrandName,
+  getSearchProducts,
 } from '../services/inventery-api/ProductService';
 import { DialogContent, DialogDescription, DialogTitle, DialogTrigger, Dialog, DialogHeader } from '../components/ui/dialog';
 import { Button } from '../components/ui/button';
-import { Plus, Search, Package, AlertTriangle, TrendingUp, DollarSign } from 'lucide-react';
+import { Plus, Search, Package, AlertTriangle, TrendingUp, DollarSign, University } from 'lucide-react';
 import ProductStatic from '../components/inventory_components/products/ProductStatic';
 import { ProductSearch } from '../components/inventory_components/products/ProductSearch';
 import { ProductTableComponent } from '../components/inventory_components/products/ProductTableComponent';
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  priceNormal: number;
-  status: string;
-  brandName: string;
-  categoryName: string;
-  manufacturingLocationName: string;
-  sku: string;
-  tag: string;
-  priceSell: number;
-  promotionPrice: number;
-  metaKeyword: string;
-  seoTitle: string;
-  updateBy: string;
-  updateAt: string;
-  createBy: string;
-  createAt: string;
-  brandId: string;
-  categoryId: string;
-  manufacturingLocationId: string;
-  weight: number;
-  vat: number;
-}
-
-interface ProductFormData {
-  id: string;
-  name: string;
-  description: string;
-  priceNormal: number;
-  status: string;
-  brandName: string;
-  categoryName: string;
-  manufacturingLocationName: string;
-  sku: string;
-  tag: string;
-  priceSell: number;
-  promotionPrice: number;
-  metaKeyword: string;
-  seoTitle: string;
-  updateBy: string;
-  brandId: string;
-  categoryId: string;
-  manufacturingLocationId: string;
-}
+import type { Product, ProductFormData, CategoryName, ManufacturingLocationName, BrandName } from '../types/InventoryServiceType';
 
 const Product: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -76,23 +32,36 @@ const Product: React.FC = () => {
   const [countProductActive, setCountProductActive] = useState<number>(0);
   const [countBrandActive, setCountBrandActive] = useState<number>(0);
   const [countCategoryActive, setCountCategoryActive] = useState<number>(0);
-  
+  const [categories, setCategories] = useState<CategoryName[]>([]);
+  const [brands, setBrands] = useState<BrandName[]>([]);
+  const [openFindCategory, setOpenFindCategory] = useState<boolean>(false);
+  const [openFindBrand, setOpenFindBrand] = useState<boolean>(false);
+  const [openFindStatus, setOpenFindStatus] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>('');
+  const [category, setCategory] = useState<string>('');
+  const [brand, setBrand] = useState<string>('');
+  const [status, setStatus] = useState<string>('');
+
   const loadProducts = async (pageNum: number) => {
     setLoading(true);
     try {
-      const res = await getPageProducts({page: pageNum, size, sort: 'name,asc'});
+      const res = await getSearchProducts({
+        search: search || undefined,
+        category: category || undefined,
+        brand: brand || undefined,
+        status: status || undefined,
+        page: pageNum, size, sort: 'name,asc'});
+      
       setProducts(res.data.content);
       setTotalPages(res.data.totalPages);
       setTotalElements(res.data.totalElements);
 
-      const countProduct = await getCountProductActive();
-      setCountProductActive(countProduct.data);
+      setCountProductActive((await getCountProductActive()).data);
+      setCountBrandActive((await getCountBrandActive()).data);
+      setCountCategoryActive((await getCountCategoryActive()).data);
+      setCategories((await getCategoryName()).data);
+      setBrands((await getBrandName()).data);
 
-      const countBrand = await getCountBrandActive();
-      setCountBrandActive(countBrand.data);
-
-      const countCategory = await getCountCategoryActive();
-      setCountCategoryActive(countCategory.data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -104,7 +73,7 @@ const Product: React.FC = () => {
     if (size > 0) {
       loadProducts(page);
     }
-  }, [page, size]);
+  }, [page, size, search, category, brand, status]);
   
   const handleDelete = async (id: string) => {
     if (!window.confirm('Xác nhận xóa product này?')) return;
@@ -130,6 +99,19 @@ const Product: React.FC = () => {
   const handleFormClose = () => {
     setFormOpen(false);
   };
+
+const handleSearch = (
+  search: string | null,
+  category: string | null,
+  brand: string | null,
+  status: string | null
+) => {
+  setSearch(search ?? "");       // nếu null thì set ""
+  setCategory(category ?? "");
+  setBrand(brand ?? "");
+  setStatus(status ?? "");
+  setPage(0); // reset về trang 0 mỗi khi search/filter
+};
 
   const handleFormSubmit = async (data: ProductFormData) => {
     if (currentProduct) {
@@ -158,15 +140,15 @@ const Product: React.FC = () => {
   return (
     <div className='px-6'>
       <div className='md:px-10 -mt-10 '>
-        <div className='flex items-center justify-between -mt-10'>
-          <div className='mb-2'>
-            <h3>Quản lý sản phẩm</h3>
+        <div className='flex items-center justify-between'>
+          <div >
+            <h3 className='mb-2'>Quản lý sản phẩm</h3>
             <p className="text-muted-foreground">
               Theo dõi và quản lý sản phẩm của bạn
             </p>
           </div>
-        
-          <div className='mb-2'>
+
+          <div>
             <Dialog open={formOpen} onOpenChange={setFormOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" onClick={() => {
@@ -207,39 +189,52 @@ const Product: React.FC = () => {
           />
         </div>
 
-      </div>
-        <ProductSearch />
+      
 
-      <div className="mt-6 mx-auto px-6 md:px-10 ">
-        <ProductTableComponent
-          data={products}
-          loading={loading}
-          onEdit={handleUpdate}
-          onDelete={handleDelete}
-          totalElements={totalElements}
-        />
-      </div>
+        <div>
+          <ProductSearch
+            categories = {categories}
+            brands = {brands}
+            openFindCategory = {openFindCategory}
+            setOpenFindCategory = {setOpenFindCategory}
+            openFindBrand = {openFindBrand}
+            setOpenFindBrand = {setOpenFindBrand}
+            onSearch={handleSearch}
+          />
+        </div>
+        
 
-      <div className="flex justify-center items-center mt-4 space-x-4">
-        <button
-          onClick={() => goToPage(page - 1)}
-          disabled={page === 0}
-          className='px-3 py-1 bg-gray-200 rounded disabled:opacity-50'
-        >
-          Prev
-        </button>
+        <div>
+          <ProductTableComponent
+            data={products}
+            loading={loading}
+            onEdit={handleUpdate}
+            onDelete={handleDelete}
+            totalElements={totalElements}
+          />
+        </div>
 
-        <span>
-          Trang <strong>{totalPages === 0 ? 0 : page + 1}</strong> / <strong>{totalPages}</strong>
-        </span>
+        <div className="flex justify-center items-center mt-4 space-x-4">
+          <button
+            onClick={() => goToPage(page - 1)}
+            disabled={page === 0}
+            className='px-3 py-1 bg-gray-200 rounded disabled:opacity-50'
+          >
+            Prev
+          </button>
 
-        <button
-          onClick={() => goToPage(page + 1)}
-          disabled={page + 1 >= totalPages}
-          className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
-        >
-          Next
-        </button>
+          <span>
+            Trang <strong>{totalPages === 0 ? 0 : page + 1}</strong> / <strong>{totalPages}</strong>
+          </span>
+
+          <button
+            onClick={() => goToPage(page + 1)}
+            disabled={page + 1 >= totalPages}
+            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

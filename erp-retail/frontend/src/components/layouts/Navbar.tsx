@@ -61,7 +61,7 @@ export const Navbar: React.FC = () => {
 
   const dropdownProductLinks: NavLink[] = [
     {href: '/product', label: 'Danh sách sản phẩm '},
-    {href: '/book', label: 'Danh mục sản phẩm'},
+    {href: '/category', label: 'Danh mục sản phẩm'},
     {href: '/return', label: 'Thương hiệu'},
   ]
 

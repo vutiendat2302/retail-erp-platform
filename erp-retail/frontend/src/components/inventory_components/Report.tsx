@@ -65,29 +65,24 @@ export function Report() {
     {
       title: 'Tổng doanh thu',
       value: formatCurrency(980000000),
-      change: '+15.2%',
-      trend: 'up',
+
       icon: DollarSign
     },
     {
       title: 'Sản phẩm bán ra',
       value: '1,247',
-      change: '+8.1%',
-      trend: 'up',
+ 
       icon: Package
     },
     {
       title: 'Đơn hàng',
       value: '856',
-      change: '+12.3%',
-      trend: 'up',
+
       icon: TrendingUp
     },
     {
-      title: 'Tỷ lệ tồn kho',
-      value: '85.4%',
-      change: '-2.1%',
-      trend: 'down',
+      title: 'Sản phẩm',
+      value: '462',
       icon: Package
     }
   ];
@@ -125,17 +120,7 @@ export function Report() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stat.value}</div>
-              <div className="flex items-center text-sm">
-                {stat.trend === 'up' ? (
-                  <TrendingUp className="h-4 w-4 text-green-600 mr-1" />
-                ) : (
-                  <TrendingDown className="h-4 w-4 text-red-600 mr-1" />
-                )}
-                <span className={stat.trend === 'up' ? 'text-green-600' : 'text-red-600'}>
-                  {stat.change}
-                </span>
-                <span className="text-muted-foreground ml-1">so với tháng trước</span>
-              </div>
+                
             </CardContent>
           </Card>
         ))}

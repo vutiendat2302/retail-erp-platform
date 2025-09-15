@@ -9,12 +9,18 @@ import { Report } from './components/inventory_components/Report';
 import Warehouse from './pages/Warehouse';
 import Product from './pages/Product';
 import { LoginForm } from './pages/Login';
-import POSPage from './pages/PostOfSale';
+import POSPage from './pages/POSPage';
+import {Category} from './pages/Category';
+import OrderManagementPage from './pages/OrderManagementPage';
+import PromoCodeManagementPage from './pages/PromoCodeManagementPage';
+import { Toaster } from 'sonner';
 
 interface UserData {
   username: string;
   role: string;
 }
+
+export type PageType = 'pos' | 'orders' | 'promocodes';
 
 const AppRouter = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -30,6 +36,21 @@ const AppRouter = () => {
     setUserData(null);
     navigate('/login');
   };
+  
+
+   const goToPage = (page: PageType) => {
+    switch (page) {
+      case 'pos':
+        navigate('/pos');
+        break;
+      case 'orders':
+        navigate('/orders');
+        break;
+      case 'promocodes':
+        navigate('/promocodes');
+        break;
+    }
+  };
 
   useEffect(() => {
     if (!userData && window.location.pathname !== '/login') {
@@ -38,6 +59,7 @@ const AppRouter = () => {
   }, [userData, navigate]);
 
   return (
+    
     <Routes>
       <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
       <Route
@@ -51,17 +73,22 @@ const AppRouter = () => {
         <Route path='inventory' element={<Warehouse />} />
         <Route path='report' element={<Report />} />
         <Route path='product' element={<Product />} />
-        <Route path='post-of-link' element={<POSPage />} />
+        <Route path='post-of-link' element={<POSPage/>} />
+        <Route path = 'category' element={<Category />} />
+        <Route path="pos" element={<POSPage />} />
+        <Route path="orders" element={<OrderManagementPage onNavigate={goToPage} />} />
+        <Route path="promocodes" element={<PromoCodeManagementPage onNavigate={goToPage} />} />
       </Route>
     </Routes>
   );
 };
 
-function App() {
+export default function App() {
+  const [currentPage, setCurrentPage] = useState<PageType>('pos');
   return (
     <BrowserRouter>
       <AppRouter />
+      <Toaster />
     </BrowserRouter>
   );
 }
-export default App;

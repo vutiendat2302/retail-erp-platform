@@ -6,13 +6,8 @@ import { Badge } from '../../ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../../ui/dialog';
 import { Plus, Search, Package, AlertTriangle, TrendingUp, DollarSign } from 'lucide-react';
+import type { ProductStaticData } from '../../../types/InventoryServiceType';
 
-interface ProductStaticData {
-  totalElements: number;
-  countProducActive: number;
-  countCategoryActive: number;
-  countBrandActive: number;
-}
 
 const ProductStatic: React.FC<ProductStaticData> = ({
   totalElements,
@@ -21,7 +16,7 @@ const ProductStatic: React.FC<ProductStaticData> = ({
   countBrandActive,
 }) =>  {
   return (
-    <div className="p-6 w-[98%] mx-auto">
+    <div className="p-6 w-auto mx-auto">
       {/* Stats Cards */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>

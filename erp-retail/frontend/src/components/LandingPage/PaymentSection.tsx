@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Button } from '../../ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
-import { Label } from '../../ui/label';
-import { Separator } from '../../ui/separator';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Label } from '../ui/label';
+import { Separator } from '../ui/separator';
 import { Loader2 } from 'lucide-react';
 import type { Invoice, CompletedOrder } from '../../types/pos';
-import { checkout } from '../../services/PosService';
+import { checkout } from '../../services/pos-api/PosService';
 import { toast } from 'sonner';
 import BigNumber from 'bignumber.js';
 interface PaymentSectionProps {

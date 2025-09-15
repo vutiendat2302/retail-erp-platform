@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
-import { TabsContent } from '../../ui/tabs';
-import { Button } from '../../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { TabsContent } from '../ui/tabs';
+import { Button } from '../ui/button';
 import { ShoppingBag, Plus, Minus, Trash2 } from 'lucide-react';
 import type { Invoice, orderDetail } from '../../types/pos';
 import { toast } from 'sonner';

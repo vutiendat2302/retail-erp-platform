@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button } from '../../ui/button';
-import { TabsList, TabsTrigger } from '../../ui/tabs';
+import { Button } from '../ui/button';
+import { TabsList, TabsTrigger } from '../ui/tabs';
 import { Plus } from 'lucide-react';
 
 interface InvoiceTabsProps {

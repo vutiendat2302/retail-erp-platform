@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
-import { Button } from '../../ui/button';
-import { Input } from '../../ui/input';
-import { Badge } from '../../ui/badge';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Badge } from '../ui/badge';
+import { Tag } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 import { 
   Search, 
   Plus, 
@@ -13,7 +15,7 @@ import {
   Loader2
 } from 'lucide-react';
 import SearchSuggestions from './SearchSuggestions';
-
+import type  { PageType } from '../../App';
 interface POSHeaderProps {
   searchProduct: string;
   setSearchProduct: (value: string) => void;
@@ -25,6 +27,7 @@ interface POSHeaderProps {
   onKeyPress: (e: React.KeyboardEvent) => void;
   isLoading: boolean;
   onSearchSuggestionSelect: (productId: string) => void;
+  onNavigate?: (page: PageType) => void;
 }
 
 export default function POSHeader({
@@ -37,7 +40,8 @@ export default function POSHeader({
   onProductIdSearch,
   onKeyPress,
   isLoading,
-  onSearchSuggestionSelect
+  onSearchSuggestionSelect,
+  onNavigate
 }: POSHeaderProps) {
   const [showSuggestions, setShowSuggestions] = useState(false);
   return (
@@ -52,9 +56,9 @@ export default function POSHeader({
               value={searchProduct}
               onChange={(e) => {
                 setSearchProduct(e.target.value);
-                setShowSuggestions(e.target.value.length > 0);
+                setShowSuggestions(e.target.value.length >= 0);
               }}
-              onFocus={() => setShowSuggestions(searchProduct.length > 0)}
+              onFocus={() => setShowSuggestions(searchProduct.length >= 0)}
               onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
               className="pl-9 text-sm bg-white/95 text-slate-900 placeholder:text-slate-500 focus-visible:ring-white"
             />
@@ -122,6 +126,28 @@ export default function POSHeader({
 
         {/* Toolbar */}
         <div className="flex items-center space-x-1 lg:space-x-2 flex-shrink-0">
+           {onNavigate && (
+            <>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 w-8 lg:h-9 lg:w-9 text-white"
+                onClick={() => onNavigate('orders')}
+                title="Quản lý đơn hàng"
+              >
+                <ShoppingCart className="w-4 h-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 w-8 lg:h-9 lg:w-9 text-white"
+                onClick={() => onNavigate('promocodes')}
+                title="Quản lý mã khuyến mãi"
+              >
+                <Tag className="w-4 h-4" />
+              </Button>
+            </>
+          )}
           <Button variant="ghost" size="sm" className="h-8 w-8 lg:h-9 lg:w-9 text-white">
             <ShoppingBag className="w-4 h-4" />
           </Button>
