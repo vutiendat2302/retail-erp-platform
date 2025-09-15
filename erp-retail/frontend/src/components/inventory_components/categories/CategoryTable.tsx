@@ -6,20 +6,20 @@ import { Tooltip, TooltipTrigger} from '../../ui/tooltip';
 import { Eye, Trash, Pencil, Tag, Calendar } from 'lucide-react';
 import { DialogHeader, Dialog, DialogContent, DialogDescription, DialogTitle } from '../../ui/dialog';
 import { formatCurrency, formatDate } from '../Convert';
-import type { Product, ProductTable } from '../../../types/InventoryServiceType';
+import type { Category, CategoryTableProp } from '../../../types/InventoryServiceType';
 
-export const ProductTableComponent: React.FC<ProductTable> = ({
+export const CategoryTable: React.FC<CategoryTableProp> = ({
   data,
   loading,
   onEdit,
   onDelete,
   totalElements,
 }) => {
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [openInformationProduct, setOpenInformationProduct] = useState<boolean>(false);
-  const handleViewProduct = (product: Product) => {
-    setSelectedProduct(product);
-    setOpenInformationProduct(true);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [openInformationCategory, setOpenInformationCategory] = useState<boolean>(false);
+  const handleViewCategory = (category: Category) => {
+    setSelectedCategory(category);
+    setOpenInformationCategory(true);
   }
 
   return (
@@ -29,10 +29,10 @@ export const ProductTableComponent: React.FC<ProductTable> = ({
         <div className='flex items-center justify-between'>
           <div>
             <CardTitle>
-              Danh Sách sản phẩm
+              Danh sách danh mục sản phẩm
             </CardTitle>
             <CardDescription className='mt-2'>
-              Hiển thị {data.length} trong tổng số {totalElements} sản phẩm
+              Hiển thị {data.length} trong tổng số {totalElements} danh mục
             </CardDescription>
           </div>
           <div className="text-sm text-muted-foreground">
@@ -53,12 +53,10 @@ export const ProductTableComponent: React.FC<ProductTable> = ({
               <TableHeader className=" sticky top-0 z-50 !border-b border-gray-900 bg-gray-100 dark:bg-gray-900">
                 <TableRow className='hover:bg-transparent'>
                   <TableHead className='text-center !border-r !border-gray-300'>
-                    Tên sản phẩm
+                    Tên danh mục
                   </TableHead>
-                  <TableHead className='text-center !border-r !border-gray-300'>Mã SKU</TableHead>
-                  <TableHead className='text-center !border-r !border-gray-300'>Giá gốc</TableHead>
-                  <TableHead className='text-center !border-r !border-gray-300'>Thương hiệu</TableHead>
-                  <TableHead className='text-center !border-r !border-gray-300'>Danh mục</TableHead>
+                  <TableHead className='text-center !border-r !border-gray-300'>Tiêu đề</TableHead>
+                  <TableHead className='text-center !border-r !border-gray-300'>Mô tả</TableHead>
                   <TableHead className='text-center !border-r !border-gray-300'>Trạng thái</TableHead>
                   <TableHead className='text-center '>Chức năng</TableHead>
                 </TableRow>
@@ -66,30 +64,28 @@ export const ProductTableComponent: React.FC<ProductTable> = ({
               <TableBody>
                 {loading ? (
                   <TableRow>
-                    <TableCell colSpan={8} className='px-4 py-6 text-center'>
+                    <TableCell colSpan={5} className='px-4 py-6 text-center'>
                       Đang tải dữ liệu
                     </TableCell>
                   </TableRow>
                 ): data.length>0 ? (
-                  data.map((product) => (
-                    <TableRow key = {product.id} className="!border-b">
+                  data.map((cat) => (
+                    <TableRow key = {cat.id} className="!border-b">
                       <TableCell className='!border-r !border-gray-300'>
                         <div>
-                          <div className='font-medium'>{product.name}</div>
-                          <p>{product.seoTitle}</p>
+                          <div className='font-medium'>{cat.name}</div>
+                          <p>{cat.metaKeyword}</p>
                         </div>
                       </TableCell>
-                      <TableCell className='text-center !border-r !border-gray-300'>{product.sku} </TableCell>
-                      <TableCell className='text-center !border-r !border-gray-300'>{formatCurrency(product.priceNormal)}</TableCell>
-                      <TableCell className='text-left !border-r !border-gray-300'>{product.brandName || '-'}</TableCell>
-                      <TableCell className='text-left !border-r !border-gray-300'>{product.categoryName || '-'}</TableCell>
+                      <TableCell className='text-center !border-r !border-gray-300'>{cat.seoTitle} </TableCell>
+                      <TableCell className='text-center !border-r !border-gray-300'>{cat.description}</TableCell>
                       <TableCell className='text-center !border-r !border-gray-300 '>
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          product.status === 'active' ? 'bg-green-100 text-green-700'
+                          cat.status === 'active' ? 'bg-green-100 text-green-700'
                           :'bg-red-100 text-red-700'
                         }`}
                         >
-                          {product.status}
+                          {cat.status}
                         </span>
                       </TableCell>
                       <TableCell className='text-center'>
@@ -99,7 +95,7 @@ export const ProductTableComponent: React.FC<ProductTable> = ({
                               <Button
                                 variant="outline"
                                 size="icon"
-                                onClick={() => {handleViewProduct(product)}}
+                                onClick={() => {handleViewCategory(cat)}}
                                 className='!rounded-md text-blue-500 border-blue-500 hover:bg-blue-500 hover:text-white transition-colors'
                               >
                                 <Eye className="w-4 h-4" />
@@ -112,7 +108,7 @@ export const ProductTableComponent: React.FC<ProductTable> = ({
                               <Button
                                 variant="outline"
                                 size="icon"
-                                onClick={() => onEdit(product)}
+                                onClick={() => onEdit(cat)}
                                 className='!rounded-md text-green-500 border-green-500 hover:bg-green-500 hover:text-white transition-colors'
                               >
                                 <Pencil className="w-4 h-4" />
@@ -125,7 +121,7 @@ export const ProductTableComponent: React.FC<ProductTable> = ({
                               <Button
                                 variant="outline"
                                 size="icon"
-                                onClick={() => onDelete(product.id)}
+                                onClick={() => onDelete(cat.id)}
                                 className='!rounded-md text-red-500 border-red-500 hover:bg-red-500 hover:text-white transition-colors'
                               >
                                 <Trash className="w-4 h-4" />
@@ -138,7 +134,7 @@ export const ProductTableComponent: React.FC<ProductTable> = ({
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={7} className='px-4 py-6 text-center'>
+                    <TableCell colSpan={5} className='px-4 py-6 text-center'>
                       Không có dữ liệu
                     </TableCell>
                   </TableRow>
@@ -150,15 +146,15 @@ export const ProductTableComponent: React.FC<ProductTable> = ({
       </CardContent>
     </Card>
 
-    {selectedProduct && (
-      <Dialog open = {openInformationProduct} onOpenChange={setOpenInformationProduct}>
+    {selectedCategory && (
+      <Dialog open = {openInformationCategory} onOpenChange={setOpenInformationCategory}>
         <DialogContent className='max-w-2x1'>
           <DialogHeader>
             <DialogTitle className='flex items-center space-x-2'>
-              <span>{selectedProduct.name}</span>
+              <span>{selectedCategory.name}</span>
             </DialogTitle>
             <DialogDescription>
-              Chi tiết thông tin sản phẩm
+              Chi tiết thông tin danh mục
             </DialogDescription>
           </DialogHeader>
 
@@ -168,97 +164,42 @@ export const ProductTableComponent: React.FC<ProductTable> = ({
                 <h4 className='font-medium mb-2'>Thông tin cơ bản</h4>
                 <div className='space-y-2 text-sm'>
                   <div className='flex justify-between'>
-                    <span className='text-muted-foreground'>SKU:</span>
+                    <span className='text-muted-foreground'>Tiêu đề:</span>
                     <code className='bg-muted px-2 py-1 rounded text-xs'>
-                      {selectedProduct.sku}
+                      {selectedCategory.seoTitle}
                     </code>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Danh mục:</span>
-                    <span>{selectedProduct.categoryName}</span>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Thương hiệu:</span>
-                    <span>{selectedProduct.brandName}</span>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Giá mua vào:</span>
-                    <span className="font-medium">
-                      {formatCurrency(selectedProduct.priceNormal)}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Giá bán:</span>
-                    <span className="font-medium">
-                      {formatCurrency(selectedProduct.priceSell)}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Giá khuyến mãi:</span>
-                    <span className="font-medium">
-                      {formatCurrency(selectedProduct.promotionPrice)}
-                    </span>
+                    <span className="text-muted-foreground">Từ khóa</span>
+                    <span>{selectedCategory.metaKeyword}</span>
                   </div>
 
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Status:</span>
                     <span className="font-medium">
-                      {selectedProduct.status}
+                      {selectedCategory.status}
                     </span>
                   </div>
                 </div>
               </div>
-
-            {selectedProduct.weight && (
-              <div>
-              <h4 className="font-medium mb-2">Thông số kỹ thuật</h4>
-              <div className="space-y-2 text-sm">
-                <div className='flex justify-between'>
-                  <span className='text-muted-foreground'>Trọng lượng:</span>
-                  <span>{selectedProduct.weight}</span>
-                </div>
-              </div>
-              </div>
-            )}
             </div>
 
             <div className='space-y-4'>
               <div>
                 <h4 className="font-medium mb-2">Mô tả</h4>
                 <p className="text-sm text-muted-foreground">
-                      {selectedProduct.description}
+                      {selectedCategory.description}
                 </p>
               </div>
-              
-              {selectedProduct.tag && (
-                <div>
-                  <h4 className="font-medium mb-2">Tags</h4>
-                  <div className='flex flex-wrap gap-1'>
-                    <span>
-                      <Tag className="w-3 h-3 mr-1" />
-                      {selectedProduct.tag}
-                    </span>
-                  </div>
-                </div>
-              )}
 
               <div>
                 <h4 className="font-medium mb-2">Thông tin khác</h4>
                 <div className='space-y-2 text-sm'>
                   <div className='flex justify-between'>
-                    <span className='text-muted-foreground'>Nhà cung cấp:</span>
-                    <span>{selectedProduct.manufacturingLocationName}</span>
-                  </div>
-
-                  <div className='flex justify-between'>
                     <span className='text-muted-foreground'>Ngày tạo:</span>
                     <span className="flex items-center">
                       <Calendar className="w-3 h-3 mr-1" />
-                      {formatDate(selectedProduct.createAt)}
+                      {formatDate(selectedCategory.createAt)}
                     </span>
                   </div>
 
@@ -266,21 +207,21 @@ export const ProductTableComponent: React.FC<ProductTable> = ({
                     <span className='text-muted-foreground'>Cập nhật:</span>
                     <span className="flex items-center">
                       <Calendar className="w-3 h-3 mr-1" />
-                      {formatDate(selectedProduct.updateAt)}
+                      {formatDate(selectedCategory.updateAt)}
                     </span>
                   </div>
 
                   <div className='flex justify-between'>
                     <span className='text-muted-foreground'>Tạo bởi:</span>
                     <span className="flex items-center">
-                      {selectedProduct.createBy}
+                      {selectedCategory.createBy}
                     </span>
                   </div>
 
                   <div className='flex justify-between'>
                     <span className='text-muted-foreground'>Update bởi:</span>
                     <span className="flex items-center">
-                      {selectedProduct.createBy}
+                      {selectedCategory.createBy}
                     </span>
                   </div>
                 </div>
@@ -289,13 +230,13 @@ export const ProductTableComponent: React.FC<ProductTable> = ({
           </div>
           
           <div className='flex justify-end space-x-2 pt-4 border-t'>
-            <Button variant="outline" onClick={() => setOpenInformationProduct(false)}>
+            <Button variant="outline" onClick={() => setOpenInformationCategory(false)}>
               Đóng
             </Button>
 
             <Button onClick={() => {
-              setOpenInformationProduct(false);
-              onEdit(selectedProduct);
+              setOpenInformationCategory(false);
+              onEdit(selectedCategory);
             }}>
               Chỉnh sửa
             </Button>
@@ -306,4 +247,5 @@ export const ProductTableComponent: React.FC<ProductTable> = ({
     </div>
   )
 }
+
 

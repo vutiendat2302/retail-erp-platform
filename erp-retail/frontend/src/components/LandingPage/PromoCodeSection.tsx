@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Button } from '../../ui/button';
-import { Input } from '../../ui/input';
-import { Label } from '../../ui/label';
-import { Card, CardContent } from '../../ui/card';
-import { Badge } from '../../ui/badge';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Card, CardContent } from '../ui/card';
+import { Badge } from '../ui/badge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 import { ChevronDown, Tag, Percent, DollarSign } from 'lucide-react';
 import type { PromoCode } from '../../types/pos';
-import { validatePromoCode, usePromoCode } from '../../services/PosService';
+import { validatePromoCode, usePromoCode } from '../../services/pos-api/PosService';
 import { toast } from 'sonner';
 
 interface PromoCodeSectionProps {

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Card, CardContent } from '../../ui/card';
-import { Badge } from '../../ui/badge';
-import { ScrollArea } from '../../ui/scroll-area';
+import { Card, CardContent } from '../ui/card';
+import { Badge } from '../ui/badge';
+import { ScrollArea } from '../ui/scroll-area';
 import { Loader2, Search, TrendingUp } from 'lucide-react';
 import type { SearchResult } from '../../types/pos';
-import { searchProduct as searchProductAPI } from '../../services/PosService';
+import { searchProduct as searchProductAPI } from '../../services/pos-api/PosService';
 import { toast } from 'sonner';
 
 interface SearchSuggestionsProps {
@@ -51,7 +51,6 @@ export default function SearchSuggestions({
         onClose();
       }
     };
-
     if (isVisible) {
       document.addEventListener('mousedown', handleClickOutside);
       return () => document.removeEventListener('mousedown', handleClickOutside);

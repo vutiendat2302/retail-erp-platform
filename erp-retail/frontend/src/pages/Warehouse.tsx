@@ -1,45 +1,42 @@
 import React, {useState, useEffect} from 'react';
-
-import { Button } from '../components/ui/button';
-
-import ProductStatic from '../components/inventory_components/products/ProductStatic';
 import { ProductSearch } from '../components/inventory_components/products/ProductSearch';
 import { WarehouseChoose } from '../components/inventory_components/warehouses/WarehouseChoose';
-import { getWarehouses } from '../services/inventery-api/WarehouseService';
+import { getCountProductInWarehouse, getCountProductsNearExpiry, getCountProductsNearOut, getProductBatch, getSumQuantityProductInWarehouse, getWarehouses } from '../services/inventery-api/WarehouseService';
 import { WarehouseTableComponent } from '../components/inventory_components/warehouses/WarehouseTable';
-import { getInventoryByNameWarehouse, getTotalPriceNormalByWarehouse } from '../services/inventery-api/WarehouseService';
+import { getInventoryByNameWarehouse, getTotalPriceNormalByWarehouse, getSearchInventory} from '../services/inventery-api/WarehouseService';
 import WarehouseStatic from '../components/inventory_components/warehouses/WarehouseStatic';
-interface Warehouse {
-  id: string;
-  name: string;
-  description: string;
-  address: string;
-  status: string;
-  createBy: string;
-  updateBy: string;
-}
-
-interface Inventory {
-  id: string;
-  productName: string;
-  quantityAvailable: number;
-  warehouseName: string;
-  status: string;
-  minimumQuantity: number;
-  maximumQuantity: number;
-  productBatchName: string;
-  expiryDate: string;
-  importDate: string;
-  priceNormal: number;
-}
+import type { Warehouse, Inventory, ProductBatch } from '../types/InventoryServiceType';
+import { HardDrive } from 'lucide-react';
+import { InventorySearch } from '../components/inventory_components/warehouses/WarehouseSearch';
 
 const Warehouse: React.FC = () => {
+  //data
   const [dataWarehouse, setDataWarehouse] = useState<Warehouse[]>([]);
   const [openFindWarehouse, setOpenWarehouse] = useState(false);
   const [selectWarehouse, setSelectWarehouse] = useState<string | null>('');
   const [inventories, setInventories] = useState<Inventory[]>([]);
-  const [totalInventory, setTotalInventory] = useState<number>(0);
-  const [totalPriceNormal, setTotalPriceNormal] = useState<number>(0);
+
+  //static
+  const [totalInventory, setTotalInventory] = useState<number>(0); // tổng số bản ghi trong page
+  const [totalPriceNormal, setTotalPriceNormal] = useState<number>(0); // Tổng số tiền của các sản phẩm
+  const [countProductInWarehouse, setCountProductInWarehouse] = useState<number>(0); // Số lượng sản phẩm có trong kho
+  const [sumQuantityProductInWarehouse, setSumQuantityProductInWarehouse] = useState<number>(0); // Tổng số lượng sản phẩm trong kho
+  const [countProductsNearExpiry, setCountProductsNearExpiry] = useState<number>(0);
+  const [countProductsNearOut, setCountProductsNearOut] = useState<number>(0);
+  const [totalElements, setTotalElements] = useState<number>(0); // tổng số bản ghi trong database
+  const [productBatches, setProductBatches] = useState<ProductBatch[]>([]);
+
+  //search
+  const [productName, setProductName] = useState<string>('');
+  const [productBatch, setProductBatch] = useState<string>('');
+  const [openFindProductBatch, setOpenFindProductBatch] = useState<boolean>(false);
+
+  //page
+  const [page, setPage] = useState<number>(0); // set page
+  const [size, setSize] = useState<number>(20); // set size cua page
+  const [loading, setLoading] = useState<boolean>(false); // loading lai trang page khi co thay doi
+  const [totalPages, setTotalPages] = useState<number>(0);
+  
 
   useEffect(() => {
     const fetchWarehouses = async () => {
@@ -50,6 +47,8 @@ const Warehouse: React.FC = () => {
         if (warehouseData.length > 0) {
           setSelectWarehouse(warehouseData[0].id);
         }
+
+        setProductBatches((await getProductBatch()).data);
       } catch (error) {
       console.error("Failed to fetch warehouse data: ", error);
       }
@@ -58,23 +57,84 @@ const Warehouse: React.FC = () => {
     fetchWarehouses();
   }, []);
 
+  const loadInventory = async (pageNum: number, warehouseId: string) => {
+    setLoading(true);
+    try {
+      const res = await getSearchInventory(warehouseId, {
+        productName: productName || undefined,
+        productBatch: productBatch || undefined,
+        page: pageNum,
+        size,
+        sort: 'productName,asc'
+      });
+
+      setInventories(res.data.content || []);
+      setTotalPages(res.data.totalPages || 0);
+      setTotalInventory(res.data.length || 0);
+      console.log('settotalInventory');
+      setTotalElements(res.data.totalElements);
+    } catch (error) {
+      console.error('Failed to fetch inventory: ', error);
+    } finally {
+      setLoading(false);
+    }
+  }
+  
+  // load khi warehouse thay doi
   useEffect(() => {
-    const fetchInventories = async () => {
-      if (selectWarehouse) {
-        try {
-          const response = await getInventoryByNameWarehouse(selectWarehouse);
-          setInventories(response.data);
-          setTotalInventory(response.data.length);
-          const total = await getTotalPriceNormalByWarehouse(selectWarehouse);
-          setTotalPriceNormal(total.data);
-        } catch (error) {
-          console.error("Failed to fetch inventory data: ", error);
-        }
+    const fetchStatics = async () => {
+      if (!selectWarehouse) return;
+      try {
+        const [
+          totalPriceRes,
+          countProductRes,
+          sumQuantityRes,
+          countNearExpiryRes,
+          countNearOutRes
+        ] = await Promise.all([
+          getTotalPriceNormalByWarehouse(selectWarehouse),
+          getCountProductInWarehouse(selectWarehouse),
+          getSumQuantityProductInWarehouse(selectWarehouse),
+          getCountProductsNearExpiry(selectWarehouse),
+          getCountProductsNearOut(selectWarehouse)
+        ]);
+
+        setTotalPriceNormal(totalPriceRes.data);
+        setCountProductInWarehouse(countProductRes.data);
+        setSumQuantityProductInWarehouse(sumQuantityRes.data);
+        setCountProductsNearExpiry(countNearExpiryRes.data);
+        setCountProductsNearOut(countNearOutRes.data);
+      } catch (err) {
+        console.error('Failed to fetch warehouse statistics: ', err);
       }
     };
 
-    fetchInventories();
+    fetchStatics();
   }, [selectWarehouse]);
+
+  // loadPage
+  useEffect(() => {
+    if (size > 0 && selectWarehouse) {
+      loadInventory(page, selectWarehouse);
+    }
+  }, [page, size, productName, productBatch, selectWarehouse]);
+
+  // chuyen page
+  const goToPage = (newPage: number) => {
+    if (newPage >= 0 && newPage < totalPages) {
+      setPage(newPage);
+    }
+  }
+
+  const handleSearch = (
+    productName: string | null,
+    productBatch: string | null,
+  ) => {
+    setProductName(productName ?? "");
+    setProductBatch(productBatch ?? "");
+    setPage(0);
+  }
+
 
   return (
     <div>
@@ -100,20 +160,53 @@ const Warehouse: React.FC = () => {
 
         <div>
           <WarehouseStatic
-            totalElements={totalInventory}
             totalPriceNormal={totalPriceNormal}
+            countProductInWarehouse={countProductInWarehouse}
+            sumQuantityProductInWarehouse={sumQuantityProductInWarehouse}
+            countProductsNearExpiry={countProductsNearExpiry}
+            countProductsNearOut={countProductsNearOut}
           />
         </div>
 
         <div>
-          <ProductSearch />
+          <InventorySearch
+            productBatches = {productBatches}
+            openFindProductBatch = {openFindProductBatch}
+            setOpenFindProductBatch = {setOpenFindProductBatch}
+            onSearch={handleSearch}
+          />
         </div>
 
         <div className='mt-6'>
           <WarehouseTableComponent
             data={inventories}
+            loading={loading}
+            totalInventory={totalInventory}
           />
         </div>
+
+        <div className="flex justify-center items-center mt-4 space-x-4">
+          <button
+            onClick={() => goToPage(page - 1)}
+            disabled={page === 0}
+            className='px-3 py-1 bg-gray-200 rounded disabled:opacity-50'
+          >
+            Prev
+          </button>
+
+          <span>
+            Trang <strong>{totalPages === 0 ? 0 : page + 1}</strong> / <strong>{totalPages}</strong>
+          </span>
+
+          <button
+            onClick={() => goToPage(page + 1)}
+            disabled={page + 1 >= totalPages}
+            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+
       </div>
     </div>
   );

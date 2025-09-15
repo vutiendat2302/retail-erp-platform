@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Button } from '../../ui/button';
-import { Dialog, DialogContent } from '../../ui/dialog';
-import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
-import { Separator } from '../../ui/separator';
+import { Button } from '../ui/button';
+import { Dialog, DialogContent } from '../ui/dialog';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Separator } from '../ui/separator';
 import { User, Calendar } from 'lucide-react';
 import  type { Invoice, PromoCode,CompletedOrder } from '../../types/pos';
 import PromoCodeSection from './PromoCodeSection';

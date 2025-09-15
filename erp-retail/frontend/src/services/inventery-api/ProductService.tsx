@@ -3,9 +3,12 @@ import api from "./api";
 
 type ProductResponseDto = any;
 
-interface PageParams {
+type PageParams = {
+    search?: string | null;
+    category?: string | null;
+    brand?: string | null;
+    status?: string | null;
     page?: number;
-    
     size?: number;
     sort?: string;
 }
@@ -39,3 +42,16 @@ export const getBrandName = () => api.get(`/api/brand/name`);
 
 export const getCountBrandActive = () => api.get(`/api/brand/getCountBrandActive`);
 export const getCountCategoryActive = () => api.get(`/api/category/getCountCategoryActive`);
+
+// Search
+export const getSearchProducts = ({
+    search = null,
+    category = null,
+    brand = null,
+    status = null,
+    page = 0,
+    size = 5,
+    sort = 'name,asc',
+}: PageParams = {}) => api.get(`api/product/search`, {
+    params: {search, category, brand, status, page, size, sort},
+})
