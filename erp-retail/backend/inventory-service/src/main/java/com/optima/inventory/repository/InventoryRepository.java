@@ -28,6 +28,7 @@ public interface InventoryRepository extends JpaRepository<InventoryEntity, Long
         int getPriceNormal();
         LocalDateTime getImportDate();
         LocalDateTime getExpiryDate();
+        String getManufacturingLocation();
     }
 
     @Query("""
@@ -82,4 +83,80 @@ public interface InventoryRepository extends JpaRepository<InventoryEntity, Long
     """)
     BigInteger getTotalPriceNormal(@Param("warehouseId")Long warehouseId);
 
+    @Query("""
+    select count(distinct c.id)
+    from InventoryEntity a
+    join ProductEntity c on a.productId = c.id
+    join WarehouseEntity d on d.id = a.warehouseId
+    where d.id = :warehouseId
+    """)
+    BigInteger getCountProductInWarehouse(@Param("warehouseId") Long warehouseId);
+
+    @Query("""
+    select sum(a.quantityAvailable)
+    from InventoryEntity a
+    join ProductBatchEntity b on a.productBatchId = b.id
+    join ProductEntity c on a.productId = c.id
+    join WarehouseEntity d on d.id = a.warehouseId
+    where d.id = :warehouseId
+    """)
+    BigInteger getSumQuantityProductInWarehouse(@Param("warehouseId") Long warehouseId);
+
+    @Query("""
+    select count(c.id)
+    from InventoryEntity a
+    join ProductBatchEntity b on a.productBatchId = b.id
+    join ProductEntity c on a.productId = c.id
+    join WarehouseEntity d on d.id = a.warehouseId
+    where d.id = :warehouseId and b.expiryDate < :afterTimeNow
+    """)
+    int getCountProductsNearExpiry(@Param("warehouseId") Long warehouseId,
+                                        @Param("afterTimeNow") LocalDateTime afterTimeNow
+    );
+
+    @Query("""
+    select count(c.id)
+    from InventoryEntity a
+    join ProductBatchEntity b on a.productBatchId = b.id
+    join ProductEntity c on a.productId = c.id
+    join WarehouseEntity d on d.id = a.warehouseId
+    where d.id = :warehouseId and a.quantityAvailable < a.minimumQuantity
+    """)
+    int getCountProductsNearOut(@Param("warehouseId") Long warehouseId);
+
+    @Query("""
+    select
+        a.id as id,
+        a.quantityAvailable as quantityAvailable,
+        a.minimumQuantity as minimumQuantity,
+        a.status as status,
+        a.maximumQuantity as maximumQuantity,
+        b.name as productBatchName,
+        c.name as productName,
+        d.name as warehouseName,
+        b.expiryDate as expiryDate,
+        b.importDate as importDate,
+        c.priceNormal as priceNormal,
+        e.name as manufacturingLocation
+    from InventoryEntity a
+    join ProductBatchEntity b on a.productBatchId = b.id
+    join ProductEntity c on a.productId = c.id
+    join WarehouseEntity d on a.warehouseId = d.id
+    join ManufacturingLocationEntity  e on e.id = c.manufacturingLocationId
+    where
+        (
+        d.id = :warehouseId
+        and
+        (:productName is null
+            or lower(c.name) like lower(concat('%', :productName, '%')))
+        and (:productBatch is null or a.productBatchId = :productBatch)
+    )
+    """)
+
+    Page<InventoryView> getSearchAllIn4(
+            @Param("warehouseId") Long warehouseId,
+            @Param("productName") String productName,
+            @Param("productBatch") Long productBatch,
+            Pageable pageable
+    );
 }

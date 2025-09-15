@@ -60,6 +60,22 @@ public class ProductController {
     public int getProductActive() {
         return productService.getProductActive();
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<ProductResponseDto>> getSearchAllIn4(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Long category,
+            @RequestParam(required = false) Long brand,
+            @RequestParam(required = false) String status,
+            Pageable pageable) {
+        Boolean statusBool = null;
+        if ("active".equalsIgnoreCase(status)) {
+            statusBool = true;
+        } else if ("inactive".equalsIgnoreCase(status)) {
+            statusBool = false;
+        }
+        return ResponseEntity.ok(productService.getSearchAllIn4(search, category, brand, statusBool, pageable));
+    }
 }
 
 

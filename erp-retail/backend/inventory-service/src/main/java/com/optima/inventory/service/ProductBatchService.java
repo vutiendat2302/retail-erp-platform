@@ -1,6 +1,8 @@
 package com.optima.inventory.service;
 
 import com.optima.inventory.dto.request.ProductBatchRequestDto;
+import com.optima.inventory.dto.response.ProductBatchNameResponse;
+import com.optima.inventory.dto.response.ProductBatchResponseDto;
 import com.optima.inventory.entity.ProductBatchEntity;
 import com.optima.inventory.mapper.ProductBatchMapper;
 import com.optima.inventory.repository.ProductBatchRepository;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductBatchService {
@@ -54,9 +57,11 @@ public class ProductBatchService {
         productBatchRepository.deleteById(productBatchId);
     }
 
-    public int getExpiringProductCount() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime oneMonthLater = now.plusMonths(1);
-        return productBatchRepository.countExpiringBatches(now, oneMonthLater);
+    @Transactional
+    public List<ProductBatchNameResponse> getProductBatchName() {
+        return productBatchRepository.getProductBatchName().stream()
+                .map(productBatchMapper::toProductBatchName)
+                .collect(Collectors.toList());
     }
+
 }

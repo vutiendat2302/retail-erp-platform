@@ -2,10 +2,7 @@ package com.optima.inventory.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -21,7 +18,9 @@ public class CategoryEntity {
 
     @Column(name = "seo_title")
     private String seoTitle;
+
     private String description;
+
     private boolean status;
 
     @Column(name = "parent_id", nullable = true)
@@ -44,4 +43,15 @@ public class CategoryEntity {
 
     @Column(name = "small_image")
     private String smallImage;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createAt = LocalDateTime.now();
+        this.updateAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updateAt = LocalDateTime.now();
+    }
 }

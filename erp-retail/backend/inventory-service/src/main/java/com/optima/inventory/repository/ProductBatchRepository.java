@@ -11,12 +11,16 @@ import java.util.List;
 
 @Repository
 public interface ProductBatchRepository extends JpaRepository<ProductBatchEntity, Long> {
-    @Query("""
-    select count(b.id)
-    from ProductBatchEntity b
-    where b.expiryDate between :now and :oneMonthLater
-    """)
-    int countExpiringBatches(@Param("now") LocalDateTime now,
-                             @Param("oneMonthLater") LocalDateTime oneMonthLater);
+    public interface ProductBatchView {
+        Long getId();
+        String getName();
+    }
 
+    @Query("""
+    select
+        a.id as id,
+        a.name as name
+    from ProductBatchEntity a
+    """)
+    List<ProductBatchView> getProductBatchName();
 }

@@ -1,5 +1,7 @@
 package com.optima.inventory.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
@@ -21,4 +23,14 @@ public class CategoryResponseDto {
     private long updateBy;
     private LocalDateTime updateAt;
     private String smallImage;
+
+    @JsonGetter("status")
+    public String getStatusString() {
+        return this.status ? "active" : "inactive";
+    }
+
+    @JsonSetter("status")
+    public void setStatusString(String status) {
+        this.status = "active".equalsIgnoreCase(status);
+    }
 }

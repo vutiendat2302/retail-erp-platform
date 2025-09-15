@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.w3c.dom.html.HTMLParagraphElement;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -45,5 +46,35 @@ public class InventoryController {
     @GetMapping("/totalPrice/{warehouseId}")
     public BigInteger getTotalPriceNormal(@PathVariable Long warehouseId) {
         return inventoryService.getTotalPriceNormal(warehouseId);
+    }
+
+    @GetMapping("/getCountProductInWarehouse/{warehouseId}")
+    public BigInteger getCountProductInWarehouse(@PathVariable Long warehouseId) {
+        return inventoryService.getCountProductInWarehouse(warehouseId);
+    }
+
+    @GetMapping("/getSumQuantityProductInWarehouse/{warehouseId}")
+    public BigInteger getSumQuantityProductInWarehouse(@PathVariable Long warehouseId) {
+        return inventoryService.getSumProductInWarehouse(warehouseId);
+    }
+
+    @GetMapping("/getCountProductsNearExpiry/{warehouseId}")
+    public int getCountProductsNearExpiry(@PathVariable Long warehouseId) {
+        return inventoryService.getCountProductsNearExpiry(warehouseId);
+    }
+
+    @GetMapping("/getCountProductsNearOut/{warehouseId}")
+    public int getCountProductsNearOut(@PathVariable Long warehouseId) {
+        return inventoryService.getCountProductsNearOut(warehouseId);
+    }
+
+    @GetMapping("/{warehouseId}/search")
+    public ResponseEntity<Page<InventoryResponseDto>> getSearchAllIn4(
+            @PathVariable Long warehouseId,
+            @RequestParam(required = false) String productName,
+            @RequestParam(required = false) Long productBatch,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(inventoryService.getSearchAllIn4(warehouseId,productName, productBatch, pageable));
     }
 }
