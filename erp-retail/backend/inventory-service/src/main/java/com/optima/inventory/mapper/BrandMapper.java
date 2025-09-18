@@ -8,18 +8,24 @@ import com.optima.inventory.repository.BrandRepository;
 import org.mapstruct.*;
 import org.springframework.stereotype.Component;
 
+import javax.swing.plaf.IconUIResource;
+
 @Mapper(componentModel = "spring")
 public interface BrandMapper {
 
     @Mapping(target = "id", ignore = true)
-    BrandEntity toBrand(BrandRequesDto request);
+    BrandEntity toBrand(BrandResponseDto brandResponseDto);
 
     BrandResponseDto toBrandResponseDto(BrandEntity brandEntity);
 
-    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createAt", ignore = true)
+    @Mapping(target = "updateAt", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateBrand(@MappingTarget BrandEntity brandEntity, BrandRequesDto request);
+    void updateBrand(@MappingTarget BrandEntity brandEntity, BrandResponseDto brandResponseDto);
 
-    BrandNameResponse toBrandName(BrandRepository.BrandView view);
+    BrandNameResponse toBrandName(BrandRepository.BrandNameView view);
+
+    @Mapping(source = "id", target = "id")
+    BrandResponseDto fromProjection(BrandRepository.BrandView view);
 }
 

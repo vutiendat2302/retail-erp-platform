@@ -10,3 +10,4 @@ public class BrandNameResponse {
     private Long id;
     private String name;
 }
+
