@@ -36,4 +36,5 @@ public class SupplierEntity {
     private LocalDateTime updateAt;
 
     private Boolean status;
+    private String phone;
 }
